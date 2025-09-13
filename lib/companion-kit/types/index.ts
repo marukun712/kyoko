@@ -13,8 +13,6 @@ export interface CompanionConfig {
 export interface CompanionContext {
 	vrm: VRM | null;
 	mixer?: THREE.AnimationMixer;
-	audioContext?: AudioContext;
-	analyser?: AnalyserNode;
 }
 
 export interface AudioSource {

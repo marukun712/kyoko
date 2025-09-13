@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import type * as THREE from "three";
+import * as THREE from "three";
 import { CompanionControls } from "../components/CompanionControls";
 import { CompanionViewer } from "../components/CompanionViewer";
 import {
@@ -15,6 +15,7 @@ import {
 	VRMEmotionProvider,
 	WebSpeechProvider,
 } from "../lib/companion-kit";
+import { loadVRM } from "../utils/vrm/loadVRM";
 
 export default function Home() {
 	const [engine, setEngine] = useState<CompanionEngine | null>(null);
@@ -48,7 +49,10 @@ export default function Home() {
 			const companionEngine = new CompanionEngine(config);
 
 			companionEngine.setTTSProvider(
-				new VOICEVOXProvider({ baseUrl: "http://127.0.0.1:50021", speaker: 1 }),
+				new VOICEVOXProvider({
+					baseUrl: process.env.VOICEVOX_URL || "http://127.0.0.1:50021",
+					speaker: Number(process.env.VOICEVOX_SPEAKER) || 1,
+				}),
 			);
 			companionEngine.setSpeechProvider(new WebSpeechProvider());
 			companionEngine.setEmotionProvider(new VRMEmotionProvider());
@@ -65,8 +69,14 @@ export default function Home() {
 		if (!engine || !sceneRef.current) return;
 		try {
 			await engine.init();
-			const _gltf = await engine.loadCharacter();
-			engine.attachToScene(sceneRef.current.scene);
+
+			const modelPath = `/models/${process.env.NEXT_PUBLIC_MODEL_NAME || "kyoko.vrm"}`;
+			const { gltf } = await loadVRM(modelPath);
+			const vrm = gltf.userData.vrm;
+			const mixer = new THREE.AnimationMixer(gltf.scene);
+			sceneRef.current.scene.add(gltf.scene);
+			engine.setVRM(vrm, mixer);
+
 			const components = sceneRef.current;
 			const animate = () => {
 				requestAnimationFrame(animate);

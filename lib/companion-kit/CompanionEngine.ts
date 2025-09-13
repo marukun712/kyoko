@@ -1,6 +1,5 @@
+import type { VRM } from "@pixiv/three-vrm";
 import * as THREE from "three";
-import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { loadVRM } from "../../utils/vrm/loadVRM";
 import type { CompanionConfig } from "./CompanionConfig";
 import type { EventHandler } from "./events";
 import type { AnimationProvider } from "./providers/animation";
@@ -67,6 +66,19 @@ export class CompanionEngine {
 		this.eventHandlers.push(handler);
 	}
 
+	setVRM(vrm: VRM, mixer?: THREE.AnimationMixer): void {
+		this.context.vrm = vrm;
+		if (mixer) {
+			this.context.mixer = mixer;
+		}
+		if (this.emotionProvider && vrm) {
+			this.emotionProvider.setVRM(vrm);
+		}
+		if (this.config.enableLipSync && this.lipSyncProvider && vrm) {
+			this.lipSyncProvider.setVRM(vrm);
+		}
+	}
+
 	removeEventHandler(handler: EventHandler): void {
 		const index = this.eventHandlers.indexOf(handler);
 		if (index > -1) {
@@ -78,41 +90,9 @@ export class CompanionEngine {
 		try {
 			this.config.validate();
 			this.setupWebSocket();
-			this.setupAudioContext();
 		} catch (error) {
 			console.error("Failed to initialize companion engine:", error);
 			throw error;
-		}
-	}
-
-	async loadCharacter(): Promise<{ gltf: GLTF; helperRoot: THREE.Group }> {
-		try {
-			const result = await loadVRM(this.config.modelPath);
-			this.context.vrm = result.gltf.userData.vrm;
-			this.context.mixer = new THREE.AnimationMixer(result.gltf.scene);
-			if (this.emotionProvider && this.context.vrm) {
-				this.emotionProvider.setVRM(this.context.vrm);
-			}
-			if (
-				this.config.enableLipSync &&
-				this.lipSyncProvider &&
-				this.context.vrm
-			) {
-				this.lipSyncProvider.setVRM(this.context.vrm);
-			}
-			return result;
-		} catch (error) {
-			console.error("Failed to load VRM model:", error);
-			throw error;
-		}
-	}
-
-	attachToScene(scene: THREE.Scene, mixer?: THREE.AnimationMixer): void {
-		if (this.context.vrm) {
-			scene.add(this.context.vrm.scene);
-		}
-		if (mixer) {
-			this.context.mixer = mixer;
 		}
 	}
 
@@ -299,21 +279,8 @@ export class CompanionEngine {
 		);
 	}
 
-	private setupAudioContext(): void {
-		if (!this.config.enableVoice) {
-			console.warn("Voice is disabled.");
-			return;
-		}
-		try {
-			this.context.audioContext = new AudioContext();
-		} catch (error) {
-			console.error("Failed to setup audio context:", error);
-		}
-	}
-
 	dispose(): void {
 		this.websocket?.close();
 		this.speechProvider?.stopListening();
-		this.context.audioContext?.close();
 	}
 }

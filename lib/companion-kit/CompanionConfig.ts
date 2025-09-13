@@ -1,7 +1,6 @@
 export interface CompanionConfigOptions {
 	userName: string;
 	modelName: string;
-	modelPath?: string;
 	websocketUrl: string;
 	companionId: string;
 
@@ -17,7 +16,6 @@ export interface CompanionConfigOptions {
 export class CompanionConfig {
 	public readonly userName: string;
 	public readonly modelName: string;
-	public readonly modelPath: string;
 	public readonly websocketUrl: string;
 	public readonly companionId: string;
 
@@ -28,9 +26,8 @@ export class CompanionConfig {
 	public readonly enableAnimations: boolean = true;
 
 	constructor(options: CompanionConfigOptions) {
-		this.userName = options.modelName;
+		this.userName = options.userName;
 		this.modelName = options.modelName;
-		this.modelPath = options.modelPath || `/models/${this.modelName}`;
 		this.websocketUrl = options.websocketUrl;
 		this.companionId = options.companionId;
 
@@ -48,7 +45,6 @@ export class CompanionConfig {
 		if (
 			!this.userName ||
 			!this.modelName ||
-			!this.modelPath ||
 			!this.websocketUrl ||
 			!this.companionId
 		) {
