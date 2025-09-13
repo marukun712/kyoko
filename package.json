@@ -1,34 +1,44 @@
 {
-  "name": "kyoko",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint",
-    "firehose": "tsx firehose.ts"
-  },
-  "dependencies": {
-    "@ai-sdk/anthropic": "^2.0.15",
-    "@aikyo/firehose": "^1.0.0",
-    "@aikyo/server": "^1.0.0",
-    "@aikyo/utils": "^1.0.0",
-    "next": "15.5.3",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "zod": "3.25.76"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.3",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "tsx": "^4.20.5"
-  }
+	"name": "kyoko",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build --turbopack",
+		"start": "next start",
+		"format": "biome format ./",
+		"format:fix": "biome format --write ./",
+		"lint": "biome lint ./",
+		"lint:fix": "biome lint --write ./",
+		"check": "biome check ./",
+		"check:fix": "biome check --write ./",
+		"firehose": "tsx firehose.ts"
+	},
+	"dependencies": {
+		"@ai-sdk/anthropic": "^2.0.15",
+		"@aikyo/firehose": "^1.0.0",
+		"@aikyo/server": "^1.0.0",
+		"@aikyo/utils": "^1.0.0",
+		"@pixiv/three-vrm": "^3.4.2",
+		"@types/dom-speech-recognition": "^0.0.6",
+		"@types/three": "^0.180.0",
+		"next": "15.5.3",
+		"react": "19.1.0",
+		"react-dom": "19.1.0",
+		"three": "^0.180.0",
+		"zod": "3.25.76"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.4",
+		"@eslint/eslintrc": "^3",
+		"@tailwindcss/postcss": "^4",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"eslint": "^9",
+		"eslint-config-next": "15.5.3",
+		"tailwindcss": "^4",
+		"tsx": "^4.20.5",
+		"typescript": "^5"
+	}
 }
