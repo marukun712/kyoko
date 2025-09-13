@@ -70,7 +70,7 @@ export default function Home() {
 		try {
 			await engine.init();
 
-			const modelPath = `/models/${process.env.NEXT_PUBLIC_MODEL_NAME || "kyoko.vrm"}`;
+			const modelPath = `/${process.env.NEXT_PUBLIC_MODEL_NAME || "kyoko.vrm"}`;
 			const { gltf } = await loadVRM(modelPath);
 			const vrm = gltf.userData.vrm;
 			const mixer = new THREE.AnimationMixer(gltf.scene);
