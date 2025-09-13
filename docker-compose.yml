@@ -4,10 +4,12 @@ services:
       context: ./
     ports:
       - "3000:3000"
+      - "8080:8080"
     environment:
       - NEXT_PUBLIC_COMPANION_ID=companion_kyoko
       - NEXT_PUBLIC_FIREHOSE_URL=ws://localhost:8080
       - NEXT_PUBLIC_MODEL_NAME=kyoko.vrm
+      - NEXT_PUBLIC_IDLE_ANIMATION_URL=/idle.fbx
       - NEXT_PUBLIC_VOICEVOX_URL=http://voicevox:50021
       - NEXT_PUBLIC_VOICEVOX_SPEAKER=1
 

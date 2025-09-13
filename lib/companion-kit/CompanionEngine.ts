@@ -26,6 +26,8 @@ export class CompanionEngine {
 	private websocket?: WebSocket;
 
 	private currentAction?: THREE.AnimationAction;
+	private idleAction?: THREE.AnimationAction;
+	private idleAnimationUrl?: string;
 
 	constructor(config: CompanionConfig) {
 		this.config = config;
@@ -160,11 +162,21 @@ export class CompanionEngine {
 			const action = this.context.mixer.clipAction(clip);
 			action.setLoop(THREE.LoopOnce, 1);
 			action.clampWhenFinished = true;
-			if (this.currentAction) {
+			
+			if (this.currentAction && this.currentAction !== this.idleAction) {
 				this.currentAction.crossFadeTo(action, 0.2, false);
+			} else if (this.currentAction === this.idleAction) {
+				this.idleAction.crossFadeTo(action, 0.2, false);
 			}
+			
 			action.play();
 			this.currentAction = action;
+			
+			const onFinished = () => {
+				this.context.mixer?.removeEventListener('finished', onFinished);
+				this.playIdleAnimation();
+			};
+			this.context.mixer.addEventListener('finished', onFinished);
 		} catch (error) {
 			console.error("Failed to play animation:", error);
 		}
@@ -205,6 +217,45 @@ export class CompanionEngine {
 			return;
 		}
 		this.emotionProvider.setEmotion(emotion, intensity);
+	}
+
+	async setIdleAnimation(url: string): Promise<void> {
+		if (!this.config.enableAnimations) {
+			console.warn("Animation is disabled.");
+			return;
+		}
+		if (!this.animationProvider || !this.context.vrm || !this.context.mixer) {
+			console.warn("Cannot set idle animation: missing required components");
+			return;
+		}
+		try {
+			this.idleAnimationUrl = url;
+			const clip = await this.animationProvider.loadAnimation(
+				url,
+				this.context.vrm,
+			);
+			if (!clip) {
+				console.warn(`Failed to load idle animation from ${url}`);
+				return;
+			}
+			this.idleAction = this.context.mixer.clipAction(clip);
+			this.idleAction.setLoop(THREE.LoopRepeat, Infinity);
+		} catch (error) {
+			console.error("Failed to set idle animation:", error);
+		}
+	}
+
+	async playIdleAnimation(): Promise<void> {
+		if (!this.idleAction) {
+			console.warn("No idle animation set");
+			return;
+		}
+		if (this.currentAction && this.currentAction !== this.idleAction) {
+			this.currentAction.crossFadeTo(this.idleAction, 0.2, false);
+		} else {
+			this.idleAction.play();
+		}
+		this.currentAction = this.idleAction;
 	}
 
 	private setupWebSocket(): void {
