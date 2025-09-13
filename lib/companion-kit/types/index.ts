@@ -2,16 +2,16 @@ import type { VRM } from "@pixiv/three-vrm";
 import type * as THREE from "three";
 
 export interface CompanionConfig {
+	userName: string;
 	modelName: string;
-	modelPath?: string;
-	websocketUrl?: string;
-	companionId?: string;
-	companionUrl?: string;
-	canvas?: HTMLCanvasElement;
+	modelPath: string;
+	websocketUrl: string;
+	companionId: string;
+	canvas: HTMLCanvasElement;
 }
 
 export interface CompanionContext {
-	vrm?: VRM;
+	vrm: VRM | null;
 	mixer?: THREE.AnimationMixer;
 	audioContext?: AudioContext;
 	analyser?: AnalyserNode;
@@ -26,22 +26,16 @@ export interface AudioSource {
 
 export interface SpeechRecognitionResult {
 	transcript: string;
-	confidence: number;
-	isFinal: boolean;
 }
 
 export interface WebSocketEvent {
-	type?: string;
-	name?: string;
-	from?: string;
-	to?: string | string[];
-	message?: string;
-	metadata?: {
-		emotion?: string;
-		[key: string]: unknown;
-	};
-	params?: {
-		url?: string;
-		[key: string]: unknown;
-	};
+	type: string;
+	name: string;
+	from: string;
+	to: string | string[];
+	message: string;
+	//biome-ignore lint: suspicious/noExplicitAny
+	metadata: Record<string, any>;
+	//biome-ignore lint: suspicious/noExplicitAny
+	params: Record<string, any>;
 }

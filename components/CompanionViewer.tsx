@@ -26,7 +26,6 @@ export function CompanionViewer({
 
 		const canvas = canvasRef.current;
 
-		// Three.jsシーン初期化
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(
 			75,
@@ -37,12 +36,10 @@ export function CompanionViewer({
 		const renderer = new THREE.WebGLRenderer({ canvas });
 		const clock = new THREE.Clock();
 
-		// 基本設定
 		renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 		renderer.setClearColor(0x212121);
 		camera.position.set(0, 1, 1);
 
-		// ライティング設定
 		const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
 		directionalLight.position.set(1, 1, 1).normalize();
 		scene.add(directionalLight);
@@ -50,23 +47,15 @@ export function CompanionViewer({
 		const ambientLight = new THREE.AmbientLight(0x404040, 2);
 		scene.add(ambientLight);
 
-		// リサイズ処理
 		const handleResize = () => {
 			const { clientWidth, clientHeight } = canvas;
 			camera.aspect = clientWidth / clientHeight;
 			camera.updateProjectionMatrix();
 			renderer.setSize(clientWidth, clientHeight);
 		};
-
 		window.addEventListener("resize", handleResize);
 
-		// コンポーネントを親に渡す
 		onSceneReady({ scene, camera, renderer, clock });
-
-		return () => {
-			window.removeEventListener("resize", handleResize);
-			renderer.dispose();
-		};
 	}, [onSceneReady]);
 
 	return <canvas ref={canvasRef} style={style} className={className} />;

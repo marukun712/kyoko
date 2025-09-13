@@ -1,4 +1,5 @@
-import type { CompanionContext, WebSocketEvent } from "../types";
+import type { CompanionEngine } from "../CompanionEngine";
+import type { WebSocketEvent } from "../types";
 import { EventHandler } from "./EventHandler";
 
 export class GestureEventHandler extends EventHandler {
@@ -14,20 +15,10 @@ export class GestureEventHandler extends EventHandler {
 		);
 	}
 
-	async handle(
-		event: WebSocketEvent,
-		context: CompanionContext,
-	): Promise<void> {
+	async handle(event: WebSocketEvent, engine: CompanionEngine): Promise<void> {
 		this.validateEvent(event);
-		this.validateContext(context);
-
-		if (!event.params?.url || !context.mixer || !context.vrm) {
-			console.warn("Cannot handle gesture event: missing required components");
-			return;
-		}
-
 		try {
-			await this.playGestureAnimation(event.params.url, context);
+			await this.playGestureAnimation(event.params.url, engine);
 		} catch (error) {
 			console.error("Failed to handle gesture event:", error);
 		}
@@ -35,8 +26,8 @@ export class GestureEventHandler extends EventHandler {
 
 	private async playGestureAnimation(
 		url: string,
-		_context: CompanionContext,
+		engine: CompanionEngine,
 	): Promise<void> {
-		console.log("Animation would be loaded and played here for URL:", url);
+		engine.playAnimation(url);
 	}
 }

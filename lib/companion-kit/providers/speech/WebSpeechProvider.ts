@@ -69,8 +69,6 @@ export class WebSpeechProvider extends SpeechRecognitionProvider {
 			if (lastResult) {
 				const result: SpeechRecognitionResult = {
 					transcript: lastResult[0].transcript,
-					confidence: lastResult[0].confidence,
-					isFinal: lastResult.isFinal,
 				};
 				this.fireResult(result);
 			}

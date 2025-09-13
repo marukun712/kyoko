@@ -36,59 +36,43 @@ export default function Home() {
 		}) => {
 			sceneRef.current = components;
 
-			// CompanionEngine初期化
 			const config = new CompanionConfig({
+				userName: process.env.NEXT_PUBLIC_MODEL_NAME || "yamada",
 				modelName: process.env.NEXT_PUBLIC_MODEL_NAME || "kyoko.vrm",
-				websocketUrl: process.env.NEXT_PUBLIC_FIREHOSE_URL,
-				companionId: process.env.NEXT_PUBLIC_COMPANION_ID,
-				companionUrl: process.env.NEXT_PUBLIC_COMPANION_URL,
+				websocketUrl:
+					process.env.NEXT_PUBLIC_FIREHOSE_URL || "ws://localhost:8080",
+				companionId: process.env.NEXT_PUBLIC_COMPANION_ID || "companion_kyoko",
 			});
 
 			const companionEngine = new CompanionEngine(config);
 
-			companionEngine.setTTSProvider(new VOICEVOXProvider());
+			companionEngine.setTTSProvider(
+				new VOICEVOXProvider({ baseUrl: "http://127.0.0.1:50021", speaker: 1 }),
+			);
 			companionEngine.setSpeechProvider(new WebSpeechProvider());
 			companionEngine.setEmotionProvider(new VRMEmotionProvider());
 			companionEngine.setAnimationProvider(new MixamoAnimationProvider());
-
 			companionEngine.addEventHandler(new MessageEventHandler());
 			companionEngine.addEventHandler(new GestureEventHandler());
-
 			setEngine(companionEngine);
-
-			// レンダーループは後で開始
 		},
 		[],
 	);
 
 	const handleInit = useCallback(async () => {
 		if (!engine || !sceneRef.current) return;
-
 		try {
 			await engine.init();
-
-			// キャラクター読み込み
 			const _gltf = await engine.loadCharacter();
-
-			// シーンにアタッチ
 			engine.attachToScene(sceneRef.current.scene);
-
-			// レンダーループ開始
 			const components = sceneRef.current;
 			const animate = () => {
 				requestAnimationFrame(animate);
-
 				const deltaTime = components.clock.getDelta();
-
-				// CompanionEngineのキャラクター更新
 				engine.update(deltaTime);
-
-				// レンダリング
 				components.renderer.render(components.scene, components.camera);
 			};
-
 			animate();
-
 			setIsInitialized(true);
 		} catch (error) {
 			console.error("Failed to initialize companion:", error);

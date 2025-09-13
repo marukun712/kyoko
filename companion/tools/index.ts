@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { createCompanionAction, createCompanionKnowledge } from "@aikyo/utils";
 import { z } from "zod";
 
@@ -11,14 +12,16 @@ export const speakTool = createCompanionAction({
 			.describe(
 				"このメッセージの宛先。必ずコンパニオンのidを指定してください。特定のコンパニオンに個人的に話しかけたいとき以外は、必ず、会話に参加したことのある全員を含むようにしてください。",
 			),
+		emotion: z.enum(["happy", "sad", "angry", "neutral"]),
 	}),
 	topic: "messages",
-	publish: ({ message, to }, id) => {
+	publish: ({ message, emotion, to }, id) => {
 		return {
-			id: crypto.randomUUID(),
+			id: randomUUID(),
 			from: id,
 			to,
 			message,
+			metadata: { emotion },
 		};
 	},
 });
