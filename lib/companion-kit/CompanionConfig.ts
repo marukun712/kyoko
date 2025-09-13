@@ -5,10 +5,13 @@ export interface CompanionConfigOptions {
 	websocketUrl: string;
 	companionId: string;
 
-	enableVoice?: boolean;
-	enableSpeechRecognition?: boolean;
-	enableEmotions?: boolean;
-	enableAnimations?: boolean;
+	features?: {
+		enableVoice?: boolean;
+		enableSpeechRecognition?: boolean;
+		enableEmotions?: boolean;
+		enableLipSync?: boolean;
+		enableAnimations?: boolean;
+	};
 }
 
 export class CompanionConfig {
@@ -18,10 +21,11 @@ export class CompanionConfig {
 	public readonly websocketUrl: string;
 	public readonly companionId: string;
 
-	public readonly enableVoice?: boolean;
-	public readonly enableSpeechRecognition?: boolean;
-	public readonly enableEmotions?: boolean;
-	public readonly enableAnimations?: boolean;
+	public readonly enableVoice: boolean = true;
+	public readonly enableSpeechRecognition: boolean = true;
+	public readonly enableEmotions: boolean = true;
+	public readonly enableLipSync: boolean = true;
+	public readonly enableAnimations: boolean = true;
 
 	constructor(options: CompanionConfigOptions) {
 		this.userName = options.modelName;
@@ -30,10 +34,14 @@ export class CompanionConfig {
 		this.websocketUrl = options.websocketUrl;
 		this.companionId = options.companionId;
 
-		this.enableVoice = options.enableVoice;
-		this.enableSpeechRecognition = options.enableSpeechRecognition;
-		this.enableEmotions = options.enableEmotions;
-		this.enableAnimations = options.enableAnimations;
+		if (options.features) {
+			this.enableVoice = options.features.enableVoice || true;
+			this.enableSpeechRecognition =
+				options.features.enableSpeechRecognition || true;
+			this.enableEmotions = options.features.enableEmotions || true;
+			this.enableLipSync = options.features.enableLipSync || true;
+			this.enableAnimations = options.features.enableAnimations || true;
+		}
 	}
 
 	validate(): void {

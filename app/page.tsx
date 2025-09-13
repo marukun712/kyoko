@@ -8,6 +8,7 @@ import {
 	CompanionConfig,
 	CompanionEngine,
 	GestureEventHandler,
+	LipSyncProvider,
 	MessageEventHandler,
 	MixamoAnimationProvider,
 	VOICEVOXProvider,
@@ -37,7 +38,7 @@ export default function Home() {
 			sceneRef.current = components;
 
 			const config = new CompanionConfig({
-				userName: process.env.NEXT_PUBLIC_MODEL_NAME || "yamada",
+				userName: process.env.NEXT_PUBLIC_USER_NAME || "yamada",
 				modelName: process.env.NEXT_PUBLIC_MODEL_NAME || "kyoko.vrm",
 				websocketUrl:
 					process.env.NEXT_PUBLIC_FIREHOSE_URL || "ws://localhost:8080",
@@ -51,6 +52,7 @@ export default function Home() {
 			);
 			companionEngine.setSpeechProvider(new WebSpeechProvider());
 			companionEngine.setEmotionProvider(new VRMEmotionProvider());
+			companionEngine.setLipSyncProvider(new LipSyncProvider());
 			companionEngine.setAnimationProvider(new MixamoAnimationProvider());
 			companionEngine.addEventHandler(new MessageEventHandler());
 			companionEngine.addEventHandler(new GestureEventHandler());

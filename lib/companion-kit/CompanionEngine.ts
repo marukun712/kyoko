@@ -93,7 +93,11 @@ export class CompanionEngine {
 			if (this.emotionProvider && this.context.vrm) {
 				this.emotionProvider.setVRM(this.context.vrm);
 			}
-			if (this.lipSyncProvider && this.context.vrm) {
+			if (
+				this.config.enableLipSync &&
+				this.lipSyncProvider &&
+				this.context.vrm
+			) {
 				this.lipSyncProvider.setVRM(this.context.vrm);
 			}
 			return result;
@@ -122,7 +126,11 @@ export class CompanionEngine {
 		if (this.config.enableEmotions && this.emotionProvider?.update) {
 			this.emotionProvider.update(deltaTime);
 		}
-		if (this.config.enableEmotions && this.lipSyncProvider?.update) {
+		if (
+			this.config.enableEmotions &&
+			this.config.enableLipSync &&
+			this.lipSyncProvider?.update
+		) {
 			this.lipSyncProvider.update(deltaTime);
 		}
 	}
@@ -193,6 +201,14 @@ export class CompanionEngine {
 		}
 		try {
 			const audioSource = await this.ttsProvider.synthesize(text);
+
+			if (this.lipSyncProvider && audioSource.getAudioNode) {
+				const audioNode = audioSource.getAudioNode();
+				if (audioNode) {
+					this.lipSyncProvider.connectAudioSource(audioNode);
+				}
+			}
+
 			await audioSource.play();
 		} catch (error) {
 			console.error("Failed to speak text:", error);
