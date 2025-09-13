@@ -4,7 +4,7 @@ import { loadVRM } from "../../utils/vrm/loadVRM";
 import type { CompanionConfig } from "./CompanionConfig";
 import type { EventHandler } from "./events";
 import type { AnimationProvider } from "./providers/animation";
-import type { EmotionProvider } from "./providers/emotion";
+import type { EmotionProvider, LipSyncProvider } from "./providers/emotion";
 import type { SpeechRecognitionProvider } from "./providers/speech";
 import type { TTSProvider } from "./providers/tts";
 import type {
@@ -21,12 +21,12 @@ export class CompanionEngine {
 	private ttsProvider?: TTSProvider;
 	private speechProvider?: SpeechRecognitionProvider;
 	private emotionProvider?: EmotionProvider;
+	private lipSyncProvider?: LipSyncProvider;
 	private eventHandlers: EventHandler[] = [];
 
 	private websocket?: WebSocket;
 
 	private currentAction?: THREE.AnimationAction;
-	private timeDomainData = new Float32Array(2048);
 
 	constructor(config: CompanionConfig) {
 		this.config = config;
@@ -53,6 +53,14 @@ export class CompanionEngine {
 		if (this.context.vrm) {
 			provider.setVRM(this.context.vrm);
 		}
+	}
+
+	setLipSyncProvider(provider: LipSyncProvider): void {
+		this.lipSyncProvider = provider;
+		if (this.context.vrm) {
+			provider.setVRM(this.context.vrm);
+		}
+		provider.initializeAudio();
 	}
 
 	addEventHandler(handler: EventHandler): void {
@@ -85,6 +93,9 @@ export class CompanionEngine {
 			if (this.emotionProvider && this.context.vrm) {
 				this.emotionProvider.setVRM(this.context.vrm);
 			}
+			if (this.lipSyncProvider && this.context.vrm) {
+				this.lipSyncProvider.setVRM(this.context.vrm);
+			}
 			return result;
 		} catch (error) {
 			console.error("Failed to load VRM model:", error);
@@ -107,7 +118,12 @@ export class CompanionEngine {
 		}
 		if (this.context.vrm) {
 			this.context.vrm.update(deltaTime);
-			this.updateLipSync();
+		}
+		if (this.config.enableEmotions && this.emotionProvider?.update) {
+			this.emotionProvider.update(deltaTime);
+		}
+		if (this.config.enableEmotions && this.lipSyncProvider?.update) {
+			this.lipSyncProvider.update(deltaTime);
 		}
 	}
 
@@ -274,28 +290,9 @@ export class CompanionEngine {
 		}
 		try {
 			this.context.audioContext = new AudioContext();
-			this.context.analyser = this.context.audioContext.createAnalyser();
 		} catch (error) {
 			console.error("Failed to setup audio context:", error);
 		}
-	}
-
-	private updateLipSync(): void {
-		if (!this.config.enableEmotions) {
-			console.warn("Emotion is disabled.");
-			return;
-		}
-		if (!this.context.analyser || !this.context.vrm?.expressionManager) {
-			return;
-		}
-		this.context.analyser.getFloatTimeDomainData(this.timeDomainData);
-		let volume = 0;
-		for (let i = 0; i < this.timeDomainData.length; i++) {
-			volume = Math.max(volume, Math.abs(this.timeDomainData[i]));
-		}
-		volume = 1 / (1 + Math.exp(-45 * volume + 5));
-		if (volume < 0.1) volume = 0;
-		this.context.vrm.expressionManager.setValue("aa", volume);
 	}
 
 	dispose(): void {

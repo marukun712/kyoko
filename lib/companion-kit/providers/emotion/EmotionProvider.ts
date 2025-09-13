@@ -17,6 +17,8 @@ export abstract class EmotionProvider {
 		this.vrm = vrm;
 	}
 
+	update?(deltaTime: number): void;
+
 	protected validateEmotion(emotion: string, intensity: number): void {
 		if (!emotion || typeof emotion !== "string") {
 			throw new Error("Valid emotion name is required");

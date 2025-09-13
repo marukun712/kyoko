@@ -44,11 +44,9 @@ export class VRMEmotionProvider extends EmotionProvider {
 
 	clearEmotions(): void {
 		this.validateVRM();
-
 		if (!this.vrm?.expressionManager) {
 			return;
 		}
-
 		for (const emotion of this.supportedEmotions) {
 			try {
 				this.vrm.expressionManager.setValue(emotion, 0);
@@ -56,7 +54,6 @@ export class VRMEmotionProvider extends EmotionProvider {
 				console.error(`Failed to clear emotion "${emotion}":`, error);
 			}
 		}
-
 		this.currentEmotions.clear();
 	}
 
@@ -64,13 +61,10 @@ export class VRMEmotionProvider extends EmotionProvider {
 		emotions: Array<{ emotion: string; intensity: number }>,
 	): void {
 		this.validateVRM();
-
 		if (!this.vrm?.expressionManager) {
 			return;
 		}
-
 		this.clearEmotions();
-
 		for (const { emotion, intensity } of emotions) {
 			this.setEmotion(emotion, intensity);
 		}
@@ -78,9 +72,5 @@ export class VRMEmotionProvider extends EmotionProvider {
 
 	getCurrentEmotions(): Map<string, number> {
 		return new Map(this.currentEmotions);
-	}
-
-	setLipSyncIntensity(intensity: number): void {
-		this.setEmotion("aa", intensity);
 	}
 }
