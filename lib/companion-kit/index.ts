@@ -1,0 +1,9 @@
+export type { CompanionConfigOptions } from "./CompanionConfig";
+export { CompanionConfig } from "./CompanionConfig";
+export { CompanionEngine } from "./CompanionEngine";
+export * from "./events";
+export * from "./providers/animation";
+export * from "./providers/emotion";
+export * from "./providers/speech";
+export * from "./providers/tts";
+export * from "./types";
