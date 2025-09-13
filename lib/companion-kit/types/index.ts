@@ -12,7 +12,6 @@ export interface CompanionConfig {
 
 export interface CompanionContext {
 	vrm?: VRM;
-	scene?: THREE.Scene;
 	mixer?: THREE.AnimationMixer;
 	audioContext?: AudioContext;
 	analyser?: AnalyserNode;
@@ -39,10 +38,10 @@ export interface WebSocketEvent {
 	message?: string;
 	metadata?: {
 		emotion?: string;
-		[key: string]: any;
+		[key: string]: unknown;
 	};
 	params?: {
 		url?: string;
-		[key: string]: any;
+		[key: string]: unknown;
 	};
 }

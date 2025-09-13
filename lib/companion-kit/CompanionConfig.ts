@@ -4,7 +4,6 @@ export interface CompanionConfigOptions {
 	websocketUrl?: string;
 	companionId?: string;
 	companionUrl?: string;
-	canvas?: HTMLCanvasElement;
 
 	enableVoice?: boolean;
 	enableSpeechRecognition?: boolean;
@@ -30,7 +29,6 @@ export class CompanionConfig {
 	public readonly websocketUrl?: string;
 	public readonly companionId?: string;
 	public readonly companionUrl?: string;
-	public readonly canvas?: HTMLCanvasElement;
 
 	public readonly enableVoice: boolean;
 	public readonly enableSpeechRecognition: boolean;
@@ -60,7 +58,6 @@ export class CompanionConfig {
 			options.companionId || this.getFromEnv("NEXT_PUBLIC_COMPANION_ID");
 		this.companionUrl =
 			options.companionUrl || this.getFromEnv("NEXT_PUBLIC_COMPANION_URL");
-		this.canvas = options.canvas;
 
 		this.enableVoice = options.enableVoice ?? true;
 		this.enableSpeechRecognition = options.enableSpeechRecognition ?? true;
@@ -81,7 +78,7 @@ export class CompanionConfig {
 	}
 
 	private getFromEnv(key: string, defaultValue?: string): string | undefined {
-		if (typeof process !== "undefined" && process.env) {
+		if (process?.env) {
 			return process.env[key] || defaultValue;
 		}
 		return defaultValue;
@@ -108,7 +105,6 @@ export class CompanionConfig {
 			websocketUrl: this.websocketUrl,
 			companionId: this.companionId,
 			companionUrl: this.companionUrl,
-			canvas: this.canvas,
 			enableVoice: this.enableVoice,
 			enableSpeechRecognition: this.enableSpeechRecognition,
 			enableEmotions: this.enableEmotions,

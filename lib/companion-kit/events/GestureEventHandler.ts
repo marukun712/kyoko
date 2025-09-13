@@ -35,7 +35,7 @@ export class GestureEventHandler extends EventHandler {
 
 	private async playGestureAnimation(
 		url: string,
-		context: CompanionContext,
+		_context: CompanionContext,
 	): Promise<void> {
 		console.log("Animation would be loaded and played here for URL:", url);
 	}

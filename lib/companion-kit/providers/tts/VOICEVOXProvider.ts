@@ -7,6 +7,38 @@ export interface VOICEVOXConfig {
 	apiKey?: string;
 }
 
+interface VOICEVOXAudioQuery {
+	accent_phrases: Array<{
+		moras: Array<{
+			text: string;
+			consonant?: string;
+			consonant_length?: number;
+			vowel: string;
+			vowel_length: number;
+			pitch: number;
+		}>;
+		accent: number;
+		pause_mora?: {
+			text: string;
+			consonant?: string;
+			consonant_length?: number;
+			vowel: string;
+			vowel_length: number;
+			pitch: number;
+		};
+		is_interrogative?: boolean;
+	}>;
+	speedScale: number;
+	pitchScale: number;
+	intonationScale: number;
+	volumeScale: number;
+	prePhonemeLength: number;
+	postPhonemeLength: number;
+	outputSamplingRate: number;
+	outputStereo: boolean;
+	kana?: string;
+}
+
 class MockAudioSource implements AudioSource {
 	private audio: HTMLAudioElement;
 	onEnded?: () => void;
@@ -65,7 +97,7 @@ export class VOICEVOXProvider extends TTSProvider {
 		}
 	}
 
-	private async getAudioQuery(text: string): Promise<any> {
+	private async getAudioQuery(text: string): Promise<VOICEVOXAudioQuery> {
 		const response = await fetch(
 			`${this.config.baseUrl}/audio_query?text=${encodeURIComponent(text)}&speaker=${this.config.speaker}`,
 			{
@@ -83,7 +115,7 @@ export class VOICEVOXProvider extends TTSProvider {
 		return response.json();
 	}
 
-	private async getSynthesis(audioQuery: any): Promise<Blob> {
+	private async getSynthesis(audioQuery: VOICEVOXAudioQuery): Promise<Blob> {
 		const response = await fetch(
 			`${this.config.baseUrl}/synthesis?speaker=${this.config.speaker}`,
 			{

@@ -48,7 +48,7 @@ export class MessageEventHandler extends EventHandler {
 
 	private async handleTextToSpeech(
 		event: WebSocketEvent,
-		context: CompanionContext,
+		_context: CompanionContext,
 	): Promise<void> {
 		if (!event.message) {
 			return;

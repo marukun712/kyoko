@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { loadVRM } from "../vrm/loadVRM";
 import type { CompanionConfig } from "./CompanionConfig";
 import type { EventHandler } from "./events";
@@ -23,7 +24,6 @@ export class CompanionEngine {
 	private eventHandlers: EventHandler[] = [];
 
 	private websocket?: WebSocket;
-	private clock = new THREE.Clock();
 
 	private currentAction?: THREE.AnimationAction;
 	private timeDomainData = new Float32Array(2048);
@@ -70,14 +70,48 @@ export class CompanionEngine {
 		try {
 			this.config.validate();
 
-			await this.initializeScene();
-			await this.loadModel();
 			this.setupWebSocket();
 			this.setupAudioContext();
-			this.startRenderLoop();
 		} catch (error) {
 			console.error("Failed to initialize companion engine:", error);
 			throw error;
+		}
+	}
+
+	async loadCharacter(): Promise<{ gltf: GLTF; helperRoot: THREE.Group }> {
+		try {
+			const result = await loadVRM(this.config.modelPath);
+			this.context.vrm = result.gltf.userData.vrm;
+			this.context.mixer = new THREE.AnimationMixer(result.gltf.scene);
+
+			if (this.emotionProvider && this.context.vrm) {
+				this.emotionProvider.setVRM(this.context.vrm);
+			}
+
+			return result;
+		} catch (error) {
+			console.error("Failed to load VRM model:", error);
+			throw error;
+		}
+	}
+
+	attachToScene(scene: THREE.Scene, mixer?: THREE.AnimationMixer): void {
+		if (this.context.vrm) {
+			scene.add(this.context.vrm.scene);
+		}
+		if (mixer) {
+			this.context.mixer = mixer;
+		}
+	}
+
+	update(deltaTime: number): void {
+		if (this.context.mixer) {
+			this.context.mixer.update(deltaTime);
+		}
+
+		if (this.context.vrm) {
+			this.context.vrm.update(deltaTime);
+			this.updateLipSync();
 		}
 	}
 
@@ -140,59 +174,6 @@ export class CompanionEngine {
 
 	setEmotion(emotion: string, intensity: number): void {
 		this.emotionProvider?.setEmotion(emotion, intensity);
-	}
-
-	private async initializeScene(): Promise<void> {
-		if (!this.config.canvas) {
-			throw new Error("Canvas is required for scene initialization");
-		}
-
-		this.context.scene = new THREE.Scene();
-
-		const camera = new THREE.PerspectiveCamera(
-			75,
-			this.config.canvas.clientWidth / this.config.canvas.clientHeight,
-			0.1,
-			1000,
-		);
-		camera.position.set(0, 1, 1);
-
-		const renderer = new THREE.WebGLRenderer({ canvas: this.config.canvas });
-		renderer.setSize(
-			this.config.canvas.clientWidth,
-			this.config.canvas.clientHeight,
-		);
-		renderer.setClearColor(0x212121);
-
-		const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-		directionalLight.position.set(1, 1, 1).normalize();
-		this.context.scene.add(directionalLight);
-
-		const ambientLight = new THREE.AmbientLight(0x404040, 2);
-		this.context.scene.add(ambientLight);
-
-		window.addEventListener("resize", () => {
-			const { clientWidth, clientHeight } = this.config.canvas!;
-			camera.aspect = clientWidth / clientHeight;
-			camera.updateProjectionMatrix();
-			renderer.setSize(clientWidth, clientHeight);
-		});
-	}
-
-	private async loadModel(): Promise<void> {
-		try {
-			const { gltf } = await loadVRM(this.config.modelPath);
-			this.context.vrm = gltf.userData.vrm;
-			this.context.scene!.add(gltf.scene);
-			this.context.mixer = new THREE.AnimationMixer(gltf.scene);
-
-			if (this.emotionProvider && this.context.vrm) {
-				this.emotionProvider.setVRM(this.context.vrm);
-			}
-		} catch (error) {
-			console.error("Failed to load VRM model:", error);
-			throw error;
-		}
 	}
 
 	private setupWebSocket(): void {
@@ -284,33 +265,6 @@ export class CompanionEngine {
 		} catch (error) {
 			console.error("Failed to setup audio context:", error);
 		}
-	}
-
-	private startRenderLoop(): void {
-		const renderer = new THREE.WebGLRenderer({ canvas: this.config.canvas });
-		const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-		camera.position.set(0, 1, 1);
-
-		const animate = () => {
-			requestAnimationFrame(animate);
-
-			const deltaTime = this.clock.getDelta();
-
-			if (this.context.mixer) {
-				this.context.mixer.update(deltaTime);
-			}
-
-			if (this.context.vrm) {
-				this.context.vrm.update(deltaTime);
-				this.updateLipSync();
-			}
-
-			if (this.context.scene) {
-				renderer.render(this.context.scene, camera);
-			}
-		};
-
-		animate();
 	}
 
 	private updateLipSync(): void {
