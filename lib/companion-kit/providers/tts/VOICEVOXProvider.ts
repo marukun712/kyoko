@@ -9,7 +9,6 @@ export interface VOICEVOXConfig {
 
 class VOICEVOXAudioSource implements AudioSource {
 	private audio: HTMLAudioElement;
-	private audioContext?: AudioContext;
 	private audioNode?: MediaElementAudioSourceNode;
 	onEnded?: () => void;
 
@@ -37,12 +36,11 @@ class VOICEVOXAudioSource implements AudioSource {
 		this.audio.currentTime = 0;
 	}
 
-	getAudioNode(): AudioNode | null {
+	getAudioNode(audioContext: AudioContext): AudioNode | null {
 		if (!this.audioNode) {
 			try {
-				this.audioContext = new AudioContext();
-				this.audioNode = this.audioContext.createMediaElementSource(this.audio);
-				this.audioNode.connect(this.audioContext.destination);
+				this.audioNode = audioContext.createMediaElementSource(this.audio);
+				this.audioNode.connect(audioContext.destination);
 			} catch (error) {
 				console.error("Failed to create audio node:", error);
 				return null;

@@ -24,10 +24,10 @@ export class CompanionEngine {
 	private eventHandlers: EventHandler[] = [];
 
 	private websocket?: WebSocket;
+	private audioContext?: AudioContext;
 
 	private currentAction?: THREE.AnimationAction;
 	private idleAction?: THREE.AnimationAction;
-	private idleAnimationUrl?: string;
 
 	constructor(config: CompanionConfig) {
 		this.config = config;
@@ -61,7 +61,9 @@ export class CompanionEngine {
 		if (this.context.vrm) {
 			provider.setVRM(this.context.vrm);
 		}
-		provider.initializeAudio();
+		if (this.audioContext) {
+			provider.initializeAudio(this.audioContext);
+		}
 	}
 
 	addEventHandler(handler: EventHandler): void {
@@ -91,6 +93,10 @@ export class CompanionEngine {
 	async init(): Promise<void> {
 		try {
 			this.config.validate();
+			this.audioContext = new AudioContext();
+			if (this.lipSyncProvider) {
+				this.lipSyncProvider.initializeAudio(this.audioContext);
+			}
 			this.setupWebSocket();
 		} catch (error) {
 			console.error("Failed to initialize companion engine:", error);
@@ -162,21 +168,21 @@ export class CompanionEngine {
 			const action = this.context.mixer.clipAction(clip);
 			action.setLoop(THREE.LoopOnce, 1);
 			action.clampWhenFinished = true;
-			
+
 			if (this.currentAction && this.currentAction !== this.idleAction) {
 				this.currentAction.crossFadeTo(action, 0.2, false);
-			} else if (this.currentAction === this.idleAction) {
+			} else if (this.currentAction === this.idleAction && this.idleAction) {
 				this.idleAction.crossFadeTo(action, 0.2, false);
 			}
-			
+
 			action.play();
 			this.currentAction = action;
-			
+
 			const onFinished = () => {
-				this.context.mixer?.removeEventListener('finished', onFinished);
+				this.context.mixer?.removeEventListener("finished", onFinished);
 				this.playIdleAnimation();
 			};
-			this.context.mixer.addEventListener('finished', onFinished);
+			this.context.mixer.addEventListener("finished", onFinished);
 		} catch (error) {
 			console.error("Failed to play animation:", error);
 		}
@@ -194,8 +200,12 @@ export class CompanionEngine {
 		try {
 			const audioSource = await this.ttsProvider.synthesize(text);
 
-			if (this.lipSyncProvider && audioSource.getAudioNode) {
-				const audioNode = audioSource.getAudioNode();
+			if (
+				this.lipSyncProvider &&
+				audioSource.getAudioNode &&
+				this.audioContext
+			) {
+				const audioNode = audioSource.getAudioNode(this.audioContext);
 				if (audioNode) {
 					this.lipSyncProvider.connectAudioSource(audioNode);
 				}
@@ -229,7 +239,6 @@ export class CompanionEngine {
 			return;
 		}
 		try {
-			this.idleAnimationUrl = url;
 			const clip = await this.animationProvider.loadAnimation(
 				url,
 				this.context.vrm,
@@ -308,8 +317,18 @@ export class CompanionEngine {
 		}
 
 		this.speechProvider.onResult((result: SpeechRecognitionResult) => {
+			if (!this.config.enableSpeechRecognition) {
+				console.warn("SpeechRecognition is disabled.");
+				return;
+			}
+			if (!this.speechProvider) {
+				console.warn("No speech provider set");
+				return;
+			}
+
 			if (result.transcript.length >= 5) {
 				this.handleSpeechResult(result.transcript);
+				this.speechProvider.stopListening();
 			}
 		});
 

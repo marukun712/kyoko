@@ -1,7 +1,6 @@
 import { EmotionProvider } from "./EmotionProvider";
 
 export class LipSyncProvider extends EmotionProvider {
-	private audioContext?: AudioContext;
 	private analyser?: AnalyserNode;
 	private timeDomainData?: Float32Array<ArrayBuffer>;
 
@@ -46,10 +45,9 @@ export class LipSyncProvider extends EmotionProvider {
 		}
 	}
 
-	initializeAudio(): void {
+	initializeAudio(audioContext: AudioContext): void {
 		try {
-			this.audioContext = new AudioContext();
-			this.analyser = this.audioContext.createAnalyser();
+			this.analyser = audioContext.createAnalyser();
 			this.timeDomainData = new Float32Array(2048);
 		} catch (error) {
 			console.error("Failed to initialize audio for lip sync:", error);
@@ -92,9 +90,5 @@ export class LipSyncProvider extends EmotionProvider {
 		if (volume < 0.1) volume = 0;
 
 		this.setEmotion("aa", volume);
-	}
-
-	dispose(): void {
-		this.audioContext?.close();
 	}
 }

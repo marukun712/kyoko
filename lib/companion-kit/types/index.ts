@@ -20,7 +20,7 @@ export interface AudioSource {
 	pause(): void;
 	stop(): void;
 	onEnded?: () => void;
-	getAudioNode?(): AudioNode | null;
+	getAudioNode?(audioContext: AudioContext): AudioNode | null;
 }
 
 export interface SpeechRecognitionResult {

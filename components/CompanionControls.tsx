@@ -3,8 +3,6 @@
 interface CompanionControlsProps {
 	onInit?: () => void;
 	onStartListening?: () => void;
-	onStopListening?: () => void;
-	isListening?: boolean;
 	isInitialized?: boolean;
 	style?: React.CSSProperties;
 	className?: string;
@@ -26,8 +24,6 @@ const defaultButtonStyle: React.CSSProperties = {
 export function CompanionControls({
 	onInit,
 	onStartListening,
-	onStopListening,
-	isListening = false,
 	isInitialized = false,
 	style,
 	className,
@@ -49,15 +45,15 @@ export function CompanionControls({
 
 			{isInitialized && (
 				<button
-					onClick={isListening ? onStopListening : onStartListening}
+					onClick={onStartListening}
 					type="button"
 					style={{
 						...defaultButtonStyle,
-						left: isInitialized ? "20px" : "120px",
-						backgroundColor: isListening ? "#dc3545" : "#ff69b4",
+						left: "120px",
+						backgroundColor: "#ff69b4",
 					}}
 				>
-					{isListening ? "Stop" : "Talk"}
+					Talk
 				</button>
 			)}
 		</div>

@@ -20,6 +20,9 @@ importers:
       '@aikyo/utils':
         specifier: ^1.0.0
         version: 1.0.0(openapi-types@12.1.3)(typescript@5.9.2)
+      '@lookingglass/webxr':
+        specifier: 0.1.8
+        version: 0.1.8
       '@pixiv/three-vrm':
         specifier: ^3.4.2
         version: 3.4.2(three@0.180.0)
@@ -103,8 +106,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4
 
-  '@ai-sdk/gateway@1.0.22':
-    resolution: {integrity: sha512-1rffatIFhyCrXo+uUmJzeUw1fHU/E9k3sSb7LMNzdyafjupnZJKg+GXkhESzvsdQ3kRa61ruziZ3qCFRJExXgw==}
+  '@ai-sdk/gateway@1.0.23':
+    resolution: {integrity: sha512-ynV7WxpRK2zWLGkdOtrU2hW22mBVkEYVS3iMg1+ZGmAYSgzCqzC74bfOJZ2GU1UdcrFWUsFI9qAYjsPkd+AebA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4
@@ -1142,6 +1145,12 @@ packages:
     resolution: {integrity: sha512-Fj0j8RnBpo43tVZUVoNK6BV/9AtDUM5S7DF3LB4qTYg1LMSZqi3yeCneUTLJD6XomQJlZzbI4mst89yspVSAnA==}
     cpu: [x64]
     os: [win32]
+
+  '@lookingglass/webxr-polyfill@0.1.1':
+    resolution: {integrity: sha512-xrsJ8zhBAgE1EglLgbiVX3Z9q0mib/EYBCl31KCXTt7zyCmCSj9PgQ7apqFZBfXbbEEoP7LDBsTWNqzNphczew==}
+
+  '@lookingglass/webxr@0.1.8':
+    resolution: {integrity: sha512-cgO3coodzOtPj+GYwbbiF4TkqsRzAFpRjhH54qDR5UmQ7EIeeE+WAcVvft3W4mB281SmSAWr39caSVbb2wT0aw==}
 
   '@mastra/core@0.0.0-ai-v5-20250813235735':
     resolution: {integrity: sha512-nyS+gS5oIIbJYlRc/Zdb/qv3p+AwtC0YCAfiFyi2uJPlg5Ioa12BB1+VlxZ2ejLZfqL2HPyhc4kQ9Ho7O5QOEg==}
@@ -2621,8 +2630,8 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  ai@5.0.43:
-    resolution: {integrity: sha512-gAFE/yxwgaSBFZTX8BOgrJ2mZBr79AQXB9Y520iZqonjJGT7I/wZE6Mm9frl3OIpo5/iZCRcHVG9ilWA6m6dGQ==}
+  ai@5.0.44:
+    resolution: {integrity: sha512-l/rdoM4LcRpsRBVvZQBwSU73oNoFGlWj+PcH86QRzxDGJgZqgGItWO0QcKjBNcLDmUjGN1VYd/8J0TAXHJleRQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4
@@ -2866,6 +2875,12 @@ packages:
 
   caniuse-lite@1.0.30001741:
     resolution: {integrity: sha512-QGUGitqsc8ARjLdgAfxETDhRbJ0REsP6O3I96TAth/mVjh2cYzN2u+3AzPP3aVSm2FehEItaJw1xd+IGBXWeSw==}
+
+  cardboard-vr-display@1.0.19:
+    resolution: {integrity: sha512-+MjcnWKAkb95p68elqZLDPzoiF/dGncQilLGvPBM5ZorABp/ao3lCs7nnRcYBckmuNkg1V/5rdGDKoUaCVsHzQ==}
+
+  cbor-js@0.1.0:
+    resolution: {integrity: sha512-7sQ/TvDZPl7csT1Sif9G0+MA0I0JOVah8+wWlJVQdVEgIbCzlN/ab3x+uvMNsc34TUvO6osQTAmB2ls80JX6tw==}
 
   cborg@4.2.15:
     resolution: {integrity: sha512-T+YVPemWyXcBVQdp0k61lQp2hJniRNmul0lAwTj2DTS/6dI4eCq/MRMucGqqvFqMBfmnD8tJ9aFtPu5dEGAbgw==}
@@ -3632,6 +3647,12 @@ packages:
   github-from-package@0.0.0:
     resolution: {integrity: sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw==}
 
+  gl-matrix@2.8.1:
+    resolution: {integrity: sha512-0YCjVpE3pS5XWlN3J4X7AiAx65+nqAI54LndtVFnQZB6G/FVLkZH8y8V6R3cIoOQR4pUdfwQGd1iwyoXHJ4Qfw==}
+
+  gl-preserve-state@1.0.0:
+    resolution: {integrity: sha512-zQZ25l3haD4hvgJZ6C9+s0ebdkW9y+7U2qxvGu1uWOJh8a4RU+jURIKEQhf8elIlFpMH6CrAY2tH0mYrRjet3Q==}
+
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -3707,6 +3728,9 @@ packages:
 
   hermes-parser@0.29.1:
     resolution: {integrity: sha512-xBHWmUtRC5e/UL0tI7Ivt2riA/YBq9+SiYFU7C1oBa/j2jYGlIF9043oak1F47ihuDIxQ5nbsKueYJDRY02UgA==}
+
+  holoplay-core@0.0.9:
+    resolution: {integrity: sha512-fz/mT42dCFSFxZfjD1LiM+HW9WsxVNdoGjuPzp/OylZZtYmOg/ygWGGb3d3WIJtX4fgbtJViOj6oKMXSi1/rrQ==}
 
   hono-openapi@0.4.8:
     resolution: {integrity: sha512-LYr5xdtD49M7hEAduV1PftOMzuT8ZNvkyWfh1DThkLsIr4RkvDb12UxgIiFbwrJB6FLtFXLoOZL9x4IeDk2+VA==}
@@ -4641,6 +4665,9 @@ packages:
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+
+  nosleep.js@0.7.0:
+    resolution: {integrity: sha512-Z4B1HgvzR+en62ghwZf6BwAR6x4/pjezsiMcbF9KMLh7xoscpoYhaSXfY3lLkqC68AtW+/qLJ1lzvBIj0FGaTA==}
 
   nullthrows@1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
@@ -5625,6 +5652,9 @@ packages:
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
+  webvr-polyfill-dpdb@1.0.18:
+    resolution: {integrity: sha512-O0S1ZGEWyPvyZEkS2VbyV7mtir/NM9MNK3EuhbHPoJ8EHTky2pTXehjIl+IiDPr+Lldgx129QGt3NGly7rwRPw==}
+
   whatwg-fetch@3.6.20:
     resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
 
@@ -5804,7 +5834,7 @@ snapshots:
       '@ai-sdk/provider-utils': 3.0.8(zod@3.25.76)
       zod: 3.25.76
 
-  '@ai-sdk/gateway@1.0.22(zod@3.25.76)':
+  '@ai-sdk/gateway@1.0.23(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.9(zod@3.25.76)
@@ -7654,13 +7684,27 @@ snapshots:
   '@libsql/win32-x64-msvc@0.5.22':
     optional: true
 
+  '@lookingglass/webxr-polyfill@0.1.1':
+    dependencies:
+      cardboard-vr-display: 1.0.19
+      gl-matrix: 2.8.1
+
+  '@lookingglass/webxr@0.1.8':
+    dependencies:
+      '@lookingglass/webxr-polyfill': 0.1.1
+      gl-matrix: 2.8.1
+      holoplay-core: 0.0.9
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@mastra/core@0.0.0-ai-v5-20250813235735(openapi-types@12.1.3)(zod@3.25.76)':
     dependencies:
       '@a2a-js/sdk': 0.2.5
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.9(zod@3.25.76)
       '@ai-sdk/ui-utils': 1.2.11(zod@3.25.76)
-      '@mastra/schema-compat': 0.0.0-ai-v5-20250813235735(ai@5.0.43(zod@3.25.76))(zod@3.25.76)
+      '@mastra/schema-compat': 0.0.0-ai-v5-20250813235735(ai@5.0.44(zod@3.25.76))(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/auto-instrumentations-node': 0.62.2(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))
       '@opentelemetry/core': 2.1.0(@opentelemetry/api@1.9.0)
@@ -7675,7 +7719,7 @@ snapshots:
       '@opentelemetry/sdk-trace-node': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.37.0
       '@sindresorhus/slugify': 2.2.1
-      ai: 5.0.43(zod@3.25.76)
+      ai: 5.0.44(zod@3.25.76)
       cohere-ai: 7.18.1
       date-fns: 3.6.0
       dotenv: 16.6.1
@@ -7739,9 +7783,9 @@ snapshots:
   '@mastra/memory@0.0.0-ai-v5-20250813235735(@mastra/core@0.0.0-ai-v5-20250813235735(openapi-types@12.1.3)(zod@3.25.76))':
     dependencies:
       '@mastra/core': 0.0.0-ai-v5-20250813235735(openapi-types@12.1.3)(zod@3.25.76)
-      '@mastra/schema-compat': 0.0.0-ai-v5-20250813235735(ai@5.0.43(zod@3.25.76))(zod@3.25.76)
+      '@mastra/schema-compat': 0.0.0-ai-v5-20250813235735(ai@5.0.44(zod@3.25.76))(zod@3.25.76)
       '@upstash/redis': 1.35.3
-      ai: 5.0.43(zod@3.25.76)
+      ai: 5.0.44(zod@3.25.76)
       async-mutex: 0.5.0
       js-tiktoken: 1.0.21
       json-schema: 0.4.0
@@ -7755,9 +7799,9 @@ snapshots:
     transitivePeerDependencies:
       - pg-native
 
-  '@mastra/schema-compat@0.0.0-ai-v5-20250813235735(ai@5.0.43(zod@3.25.76))(zod@3.25.76)':
+  '@mastra/schema-compat@0.0.0-ai-v5-20250813235735(ai@5.0.44(zod@3.25.76))(zod@3.25.76)':
     dependencies:
-      ai: 5.0.43(zod@3.25.76)
+      ai: 5.0.44(zod@3.25.76)
       json-schema: 0.4.0
       zod: 3.25.76
       zod-from-json-schema: 0.0.5
@@ -9614,9 +9658,9 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@5.0.43(zod@3.25.76):
+  ai@5.0.44(zod@3.25.76):
     dependencies:
-      '@ai-sdk/gateway': 1.0.22(zod@3.25.76)
+      '@ai-sdk/gateway': 1.0.23(zod@3.25.76)
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.9(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
@@ -9948,6 +9992,14 @@ snapshots:
   camelcase@6.3.0: {}
 
   caniuse-lite@1.0.30001741: {}
+
+  cardboard-vr-display@1.0.19:
+    dependencies:
+      gl-preserve-state: 1.0.0
+      nosleep.js: 0.7.0
+      webvr-polyfill-dpdb: 1.0.18
+
+  cbor-js@0.1.0: {}
 
   cborg@4.2.15: {}
 
@@ -10929,6 +10981,10 @@ snapshots:
 
   github-from-package@0.0.0: {}
 
+  gl-matrix@2.8.1: {}
+
+  gl-preserve-state@1.0.0: {}
+
   glob-parent@5.1.2:
     dependencies:
       is-glob: 4.0.3
@@ -11032,6 +11088,14 @@ snapshots:
   hermes-parser@0.29.1:
     dependencies:
       hermes-estree: 0.29.1
+
+  holoplay-core@0.0.9:
+    dependencies:
+      cbor-js: 0.1.0
+      ws: 7.5.10
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   hono-openapi@0.4.8(hono@4.9.6)(openapi-types@12.1.3)(zod@3.25.76):
     dependencies:
@@ -12099,6 +12163,8 @@ snapshots:
   node-releases@2.0.20: {}
 
   normalize-path@3.0.0: {}
+
+  nosleep.js@0.7.0: {}
 
   nullthrows@1.1.1: {}
 
@@ -13284,6 +13350,8 @@ snapshots:
       tslib: 2.8.1
 
   webidl-conversions@3.0.1: {}
+
+  webvr-polyfill-dpdb@1.0.18: {}
 
   whatwg-fetch@3.6.20: {}
 

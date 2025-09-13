@@ -24,6 +24,7 @@
 		"@pixiv/three-vrm": "^3.4.2",
 		"@types/dom-speech-recognition": "^0.0.6",
 		"@types/three": "^0.180.0",
+		"@lookingglass/webxr": "0.1.8",
 		"next": "15.5.3",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
