@@ -9,4 +9,4 @@ WORKDIR /app
 
 RUN pnpm i;
 
-CMD pnpm run dev -p ${PORT} & pnpm tsx companion/${NEXT_PUBLIC_COMPANION_ID}.ts & wait
+CMD pnpm run firehose

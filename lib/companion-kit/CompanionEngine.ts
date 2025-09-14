@@ -147,47 +147,6 @@ export class CompanionEngine {
 		this.speechProvider.stopListening();
 	}
 
-	async playAnimation(url: string): Promise<void> {
-		if (!this.config.enableAnimations) {
-			console.warn("Animation is disabled.");
-			return;
-		}
-		if (!this.animationProvider || !this.context.vrm || !this.context.mixer) {
-			console.warn("Cannot play animation: missing required components");
-			return;
-		}
-		try {
-			const clip = await this.animationProvider.loadAnimation(
-				url,
-				this.context.vrm,
-			);
-			if (!clip) {
-				console.warn(`Failed to load animation from ${url}`);
-				return;
-			}
-			const action = this.context.mixer.clipAction(clip);
-			action.setLoop(THREE.LoopOnce, 1);
-			action.clampWhenFinished = true;
-
-			if (this.currentAction && this.currentAction !== this.idleAction) {
-				this.currentAction.crossFadeTo(action, 0.2, false);
-			} else if (this.currentAction === this.idleAction && this.idleAction) {
-				this.idleAction.crossFadeTo(action, 0.2, false);
-			}
-
-			action.play();
-			this.currentAction = action;
-
-			const onFinished = () => {
-				this.context.mixer?.removeEventListener("finished", onFinished);
-				this.playIdleAnimation();
-			};
-			this.context.mixer.addEventListener("finished", onFinished);
-		} catch (error) {
-			console.error("Failed to play animation:", error);
-		}
-	}
-
 	async speak(text: string): Promise<void> {
 		if (!this.config.enableVoice) {
 			console.warn("Voice is disabled.");
@@ -229,42 +188,79 @@ export class CompanionEngine {
 		this.emotionProvider.setEmotion(emotion, intensity);
 	}
 
+	private fadeToAction(newAction: THREE.AnimationAction, duration = 0.3) {
+		newAction.enabled = true;
+		newAction.play();
+		if (this.currentAction && this.currentAction !== newAction) {
+			this.currentAction.crossFadeTo(newAction, duration, false);
+		}
+		this.currentAction = newAction;
+	}
+
 	async setIdleAnimation(url: string): Promise<void> {
 		if (!this.config.enableAnimations) {
-			console.warn("Animation is disabled.");
+			console.warn("SpeechRecognition is disabled.");
 			return;
 		}
-		if (!this.animationProvider || !this.context.vrm || !this.context.mixer) {
-			console.warn("Cannot set idle animation: missing required components");
+		if (!this.animationProvider) {
+			console.warn("No speech recognition provider set");
 			return;
 		}
-		try {
-			const clip = await this.animationProvider.loadAnimation(
-				url,
-				this.context.vrm,
-			);
-			if (!clip) {
-				console.warn(`Failed to load idle animation from ${url}`);
-				return;
-			}
-			this.idleAction = this.context.mixer.clipAction(clip);
-			this.idleAction.setLoop(THREE.LoopRepeat, Infinity);
-		} catch (error) {
-			console.error("Failed to set idle animation:", error);
-		}
+		if (!this.context.vrm || !this.context.mixer) return;
+		const clip = await this.animationProvider.loadAnimation(
+			url,
+			this.context.vrm,
+		);
+		if (!clip) return;
+		const action = this.context.mixer.clipAction(clip);
+		action.enabled = true;
+		action.setLoop(THREE.LoopRepeat, Infinity);
+		action.play();
+		this.idleAction = action;
+		this.currentAction = action;
 	}
 
 	async playIdleAnimation(): Promise<void> {
-		if (!this.idleAction) {
-			console.warn("No idle animation set");
+		if (!this.config.enableAnimations) {
+			console.warn("SpeechRecognition is disabled.");
 			return;
 		}
-		if (this.currentAction && this.currentAction !== this.idleAction) {
-			this.currentAction.crossFadeTo(this.idleAction, 0.2, false);
-		} else {
-			this.idleAction.play();
+		if (!this.animationProvider) {
+			console.warn("No speech recognition provider set");
+			return;
 		}
-		this.currentAction = this.idleAction;
+		if (this.idleAction) this.fadeToAction(this.idleAction, 0.3);
+	}
+
+	async playAnimation(url: string): Promise<void> {
+		if (!this.config.enableAnimations) {
+			console.warn("SpeechRecognition is disabled.");
+			return;
+		}
+		if (!this.animationProvider) {
+			console.warn("No speech recognition provider set");
+			return;
+		}
+		if (!this.context.vrm || !this.context.mixer) return;
+
+		const clip = await this.animationProvider.loadAnimation(
+			url,
+			this.context.vrm,
+		);
+		if (!clip) return;
+
+		const action = this.context.mixer.clipAction(clip);
+		action.enabled = true;
+		action.setLoop(THREE.LoopOnce, 1);
+		action.clampWhenFinished = true;
+
+		this.fadeToAction(action, 0.2);
+
+		const onFinished = () => {
+			this.context.mixer?.removeEventListener("finished", onFinished);
+			if (this.idleAction) this.fadeToAction(this.idleAction, 0.3);
+		};
+		this.context.mixer.addEventListener("finished", onFinished);
 	}
 
 	private setupWebSocket(): void {

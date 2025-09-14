@@ -5,6 +5,7 @@ import {
 	CompanionServer,
 } from "@aikyo/server";
 import { companionNetworkKnowledge, speakTool } from "./tools/index";
+import { motionDBGestureAction } from "./tools/motion-db";
 
 export const companionCard: CompanionCard = {
 	metadata: {
@@ -18,7 +19,7 @@ export const companionCard: CompanionCard = {
 			"こんにちは！私はkyokoです。今日はどんなお話をしましょうか？一緒に楽しいことを見つけましょうね♪",
 	},
 	role: "あなたは、ユーザー、他のコンパニオンと共に生活するコンパニオンです。積極的にコミュニケーションをとりましょう。キャラクター設定に忠実にロールプレイしてください。",
-	actions: { speakTool },
+	actions: { speakTool, motionDBGestureAction },
 	knowledge: { companionNetworkKnowledge },
 	events: {
 		params: {
@@ -26,16 +27,42 @@ export const companionCard: CompanionCard = {
 			description: "descriptionに従い、それぞれ適切に値を代入してください。",
 			type: "object",
 			properties: {
+				already_replied: {
+					description: "初めて話す人かどうか",
+					type: "boolean",
+				},
+				need_response: {
+					description: "返答の必要があるかどうか",
+					type: "boolean",
+				},
 				need_gesture: {
 					description: "ジェスチャーで表現したいものがあるかどうか",
 					type: "boolean",
 				},
 			},
-			required: ["need_gesture"],
+			required: ["already_replied", "need_response", "need_gesture"],
 		},
 		conditions: [
 			{
-				expression: "true",
+				expression: "already_replied === true",
+				execute: [
+					{
+						instruction: "手を振って挨拶をする。",
+						tool: motionDBGestureAction,
+					},
+				],
+			},
+			{
+				expression: "need_gesture === true",
+				execute: [
+					{
+						instruction: "ジェスチャーで体の動きを表現する。",
+						tool: motionDBGestureAction,
+					},
+				],
+			},
+			{
+				expression: "need_response === true",
 				execute: [
 					{
 						instruction: "ツールを使って返信する。",
@@ -50,7 +77,6 @@ export const companionCard: CompanionCard = {
 const companion = new CompanionAgent(
 	companionCard,
 	anthropic("claude-3-5-haiku-latest"),
-	{ maxTurn: 2 },
 );
 const server = new CompanionServer(companion);
 await server.start();

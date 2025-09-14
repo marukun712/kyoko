@@ -1,20 +1,40 @@
 services:
-  companion:
+  firehose:
+    build:
+      context: ./
+      dockerfile: Firehose.Dockerfile
+    ports:
+      - "8080:8080"
+
+  kyoko:
     build:
       context: ./
     ports:
-      - "3000:3000"
-      - "8080:8080"
+      - "3030:3030"
     environment:
+      - PORT=3030
       - NEXT_PUBLIC_USER_NAME=maril
       - NEXT_PUBLIC_COMPANION_ID=companion_kyoko
+      - NEXT_PUBLIC_FIREHOSE_URL=ws://localhost:8080
+      - NEXT_PUBLIC_MODEL_NAME=kyoko.vrm
+      - NEXT_PUBLIC_IDLE_ANIMATION_URL=/idle.fbx
+      - NEXT_PUBLIC_VOICEVOX_URL=http://localhost:50021
+      - NEXT_PUBLIC_VOICEVOX_SPEAKER=8
+    volumes:
+      - "./db:/app/db"
+  aya:
+    build:
+      context: ./
+    ports:
+      - "3031:3031"
+    environment:
+      - PORT=3031
+      - NEXT_PUBLIC_USER_NAME=maril
+      - NEXT_PUBLIC_COMPANION_ID=companion_aya
       - NEXT_PUBLIC_FIREHOSE_URL=ws://localhost:8080
       - NEXT_PUBLIC_MODEL_NAME=aya.vrm
       - NEXT_PUBLIC_IDLE_ANIMATION_URL=/idle.fbx
       - NEXT_PUBLIC_VOICEVOX_URL=http://localhost:50021
       - NEXT_PUBLIC_VOICEVOX_SPEAKER=20
-
-  voicevox:
-    image: voicevox/voicevox_engine:cpu-latest
-    ports:
-      - "50021:50021"
+    volumes:
+      - "./db:/app/db"
