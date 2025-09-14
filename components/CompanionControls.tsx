@@ -10,6 +10,7 @@ interface CompanionControlsProps {
 
 const defaultButtonStyle: React.CSSProperties = {
 	position: "absolute",
+	left: "20px",
 	top: "20px",
 	zIndex: 10,
 	padding: "10px 20px",
@@ -31,14 +32,7 @@ export function CompanionControls({
 	return (
 		<div style={style} className={className}>
 			{!isInitialized && (
-				<button
-					onClick={onInit}
-					type="button"
-					style={{
-						...defaultButtonStyle,
-						left: "20px",
-					}}
-				>
+				<button onClick={onInit} type="button" style={defaultButtonStyle}>
 					Start
 				</button>
 			)}
@@ -47,11 +41,7 @@ export function CompanionControls({
 				<button
 					onClick={onStartListening}
 					type="button"
-					style={{
-						...defaultButtonStyle,
-						left: "120px",
-						backgroundColor: "#ff69b4",
-					}}
+					style={defaultButtonStyle}
 				>
 					Talk
 				</button>
