@@ -6,4 +6,5 @@ export * from "./providers/animation";
 export * from "./providers/emotion";
 export * from "./providers/speech";
 export * from "./providers/tts";
+export * from "./providers/vision";
 export * from "./types";

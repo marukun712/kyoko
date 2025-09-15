@@ -10,6 +10,7 @@ export interface CompanionConfigOptions {
 		enableEmotions?: boolean;
 		enableLipSync?: boolean;
 		enableAnimations?: boolean;
+		enableVision?: boolean;
 	};
 }
 
@@ -24,6 +25,7 @@ export class CompanionConfig {
 	public readonly enableEmotions: boolean = true;
 	public readonly enableLipSync: boolean = true;
 	public readonly enableAnimations: boolean = true;
+	public readonly enableVision: boolean = true;
 
 	constructor(options: CompanionConfigOptions) {
 		this.userName = options.userName;
@@ -38,6 +40,7 @@ export class CompanionConfig {
 			this.enableEmotions = options.features.enableEmotions || true;
 			this.enableLipSync = options.features.enableLipSync || true;
 			this.enableAnimations = options.features.enableAnimations || true;
+			this.enableVision = options.features.enableVision || true;
 		}
 	}
 

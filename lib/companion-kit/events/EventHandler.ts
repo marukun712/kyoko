@@ -2,7 +2,7 @@ import type { CompanionEngine } from "../CompanionEngine";
 import type { WebSocketEvent } from "../types";
 
 export abstract class EventHandler {
-	abstract canHandle(event: WebSocketEvent): boolean;
+	abstract canHandle(event: WebSocketEvent, engine: CompanionEngine): boolean;
 	abstract handle(
 		event: WebSocketEvent,
 		engine: CompanionEngine,

@@ -12,8 +12,10 @@ import {
 	LipSyncProvider,
 	MessageEventHandler,
 	MixamoAnimationProvider,
+	VisionEventHandler,
 	VOICEVOXProvider,
 	VRMEmotionProvider,
+	WebCamVisionProvider,
 	WebSpeechProvider,
 } from "../lib/companion-kit";
 import { loadVRM } from "../utils/vrm/loadVRM";
@@ -23,6 +25,7 @@ let camera: THREE.PerspectiveCamera | null = null;
 let renderer: THREE.WebGLRenderer | null = null;
 let clock: THREE.Clock | null = null;
 let engine: CompanionEngine | null = null;
+let visionProvider: WebCamVisionProvider | null = null;
 
 export default function Home() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -50,7 +53,7 @@ export default function Home() {
 			clock = new THREE.Clock();
 
 			renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-			renderer.setClearColor(0x212121);
+			renderer.setClearColor(0xffffff);
 			renderer.xr.enabled = true;
 			const lookingGlass = LookingGlassConfig;
 			lookingGlass.targetY = 1.25;
@@ -103,8 +106,18 @@ export default function Home() {
 			engine.setAnimationProvider(new MixamoAnimationProvider());
 			engine.addEventHandler(new MessageEventHandler());
 			engine.addEventHandler(new GestureEventHandler());
+			engine.addEventHandler(new VisionEventHandler());
+			visionProvider = new WebCamVisionProvider();
+			engine.setVisionProvider(visionProvider);
 
 			await engine.init();
+
+			try {
+				await visionProvider.initialize();
+				console.log("Camera initialized successfully");
+			} catch (error) {
+				console.warn("Failed to initialize camera:", error);
+			}
 
 			const modelPath = `/${process.env.NEXT_PUBLIC_MODEL_NAME || "kyoko.vrm"}`;
 			const { gltf } = await loadVRM(modelPath);

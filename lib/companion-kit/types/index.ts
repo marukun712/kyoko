@@ -28,6 +28,7 @@ export interface SpeechRecognitionResult {
 }
 
 export interface WebSocketEvent {
+	id: string;
 	type: string;
 	name: string;
 	from: string;

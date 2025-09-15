@@ -6,6 +6,7 @@ import type { AnimationProvider } from "./providers/animation";
 import type { EmotionProvider, LipSyncProvider } from "./providers/emotion";
 import type { SpeechRecognitionProvider } from "./providers/speech";
 import type { TTSProvider } from "./providers/tts";
+import type { VisionProvider } from "./providers/vision";
 import type {
 	CompanionContext,
 	SpeechRecognitionResult,
@@ -13,7 +14,7 @@ import type {
 } from "./types";
 
 export class CompanionEngine {
-	private config: CompanionConfig;
+	config: CompanionConfig;
 	private context: CompanionContext = { vrm: null };
 
 	private animationProvider?: AnimationProvider;
@@ -21,6 +22,7 @@ export class CompanionEngine {
 	private speechProvider?: SpeechRecognitionProvider;
 	private emotionProvider?: EmotionProvider;
 	private lipSyncProvider?: LipSyncProvider;
+	private visionProvider?: VisionProvider;
 	private eventHandlers: EventHandler[] = [];
 
 	private websocket?: WebSocket;
@@ -64,6 +66,10 @@ export class CompanionEngine {
 		if (this.audioContext) {
 			provider.initializeAudio(this.audioContext);
 		}
+	}
+
+	setVisionProvider(provider: VisionProvider): void {
+		this.visionProvider = provider;
 	}
 
 	addEventHandler(handler: EventHandler): void {
@@ -173,6 +179,21 @@ export class CompanionEngine {
 			await audioSource.play();
 		} catch (error) {
 			console.error("Failed to speak text:", error);
+		}
+	}
+
+	async capture(): Promise<string> {
+		if (!this.config.enableVision) {
+			throw new Error("Vision is disabled.");
+		}
+		if (!this.visionProvider) {
+			throw new Error("No vision provider set");
+		}
+		try {
+			return await this.visionProvider.Capture();
+		} catch (error) {
+			console.error("Failed to capture image:", error);
+			throw error;
 		}
 	}
 
@@ -291,7 +312,7 @@ export class CompanionEngine {
 	private async handleWebSocketEvent(event: WebSocketEvent): Promise<void> {
 		if (event.from === this.config.companionId) {
 			for (const handler of this.eventHandlers) {
-				if (handler.canHandle(event)) {
+				if (handler.canHandle(event, this)) {
 					try {
 						await handler.handle(event, this);
 					} catch (error) {
@@ -333,14 +354,31 @@ export class CompanionEngine {
 		});
 	}
 
+	async returnQuery(id: string, body: string): Promise<void> {
+		if (!this.websocket) return;
+		this.websocket.send(
+			JSON.stringify({
+				topic: "query-results",
+				body: {
+					id,
+					success: true,
+					body: body,
+				},
+			}),
+		);
+	}
+
 	private async handleSpeechResult(transcript: string): Promise<void> {
 		if (!this.websocket) return;
 		this.websocket.send(
 			JSON.stringify({
-				id: crypto.randomUUID(),
-				from: `user_${this.config.userName}`,
-				to: [this.config.companionId],
-				message: transcript,
+				topic: "messages",
+				body: {
+					id: crypto.randomUUID(),
+					from: `user_${this.config.userName}`,
+					to: [this.config.companionId],
+					message: transcript,
+				},
 			}),
 		);
 	}
