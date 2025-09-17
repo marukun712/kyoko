@@ -12,14 +12,14 @@ importers:
         specifier: ^2.0.15
         version: 2.0.15(zod@3.25.76)
       '@aikyo/firehose':
-        specifier: ^1.0.0
-        version: 1.0.0(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
+        specifier: ^1.0.1
+        version: 1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
       '@aikyo/server':
-        specifier: ^1.0.0
-        version: 1.0.0(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))
+        specifier: ^1.0.1
+        version: 1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
       '@aikyo/utils':
-        specifier: ^1.0.0
-        version: 1.0.0(openapi-types@12.1.3)(typescript@5.9.2)
+        specifier: ^1.0.1
+        version: 1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
       '@lookingglass/webxr':
         specifier: 0.1.8
         version: 0.1.8
@@ -144,16 +144,16 @@ packages:
     peerDependencies:
       zod: ^3.23.8
 
-  '@aikyo/firehose@1.0.0':
-    resolution: {integrity: sha512-/E9her/7FPMvEKKiyURiiFCBlVT8YEtXwRnpkOUCDLXWEsyVjlfRL2367u1k8Qyqsf8vS7vE7JPnJPt4RpPwnw==}
+  '@aikyo/firehose@1.0.1':
+    resolution: {integrity: sha512-U3s130ZpidsseEsogLeKjW8aSw3/P1jCyQyRWv3LJJx7d9BnOl7aHZp9SkrGPhZMQ3ntfzZE/QjiBok5109s/g==}
     peerDependencies:
       typescript: ^5
 
-  '@aikyo/server@1.0.0':
-    resolution: {integrity: sha512-DtVjdImmG05uIRpWO8T4nVfuWB1ACFtV5CjfUCKPr958nJ/duC3/OVFMOgExwTyEyPwOOc7IygtV1eAf7+ZTzg==}
+  '@aikyo/server@1.0.1':
+    resolution: {integrity: sha512-unZtXq8c4hSdVvDnEOURhUTo+6VXghidnzN1clnjYJPVI27lLuXsSRXu871KKhnsUrpaP9yJu4khJdVbJdeaYw==}
 
-  '@aikyo/utils@1.0.0':
-    resolution: {integrity: sha512-T0Mtl3LkcW/8ElnjUcB60ICym9c2vHojIsl5d3ekeUapxp1JjBIEG0XI9wqwR2lwPISPibquyk6oFk/o33i7CA==}
+  '@aikyo/utils@1.0.1':
+    resolution: {integrity: sha512-vYlHW1H7ikHuAiHt2VhtZxml+7TkNSla2/z2a+WJKoJIDfbm3u7plokt13mivCCWfnMfcqcO9p1A1OpLmYvMNA==}
     peerDependencies:
       typescript: ^5
 
@@ -5876,8 +5876,10 @@ snapshots:
       zod: 3.25.76
       zod-to-json-schema: 3.24.6(zod@3.25.76)
 
-  '@aikyo/firehose@1.0.0(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)':
+  '@aikyo/firehose@1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)':
     dependencies:
+      '@aikyo/server': 1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
+      '@aikyo/utils': 1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
       '@chainsafe/libp2p-gossipsub': 14.1.1
       '@chainsafe/libp2p-noise': 16.1.4
       '@chainsafe/libp2p-yamux': 7.0.4
@@ -5890,13 +5892,30 @@ snapshots:
       ws: 8.18.3
       zod: 3.25.76
     transitivePeerDependencies:
+      - '@hono/arktype-validator'
+      - '@hono/effect-validator'
+      - '@hono/typebox-validator'
+      - '@hono/valibot-validator'
+      - '@hono/zod-validator'
+      - '@sinclair/typebox'
+      - '@types/json-schema'
+      - '@valibot/to-json-schema'
+      - arktype
+      - aws-crt
       - bufferutil
+      - effect
+      - encoding
+      - openapi-types
+      - pg-native
       - react-native
       - supports-color
       - utf-8-validate
+      - valibot
+      - zod-openapi
 
-  '@aikyo/server@1.0.0(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))':
+  '@aikyo/server@1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)':
     dependencies:
+      '@aikyo/utils': 1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
       '@chainsafe/libp2p-gossipsub': 14.1.1
       '@chainsafe/libp2p-noise': 16.1.4
       '@chainsafe/libp2p-yamux': 7.0.4
@@ -5933,15 +5952,18 @@ snapshots:
       - pg-native
       - react-native
       - supports-color
+      - typescript
       - utf-8-validate
       - valibot
       - zod-openapi
 
-  '@aikyo/utils@1.0.0(openapi-types@12.1.3)(typescript@5.9.2)':
+  '@aikyo/utils@1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)':
     dependencies:
+      '@aikyo/server': 1.0.1(@types/json-schema@7.0.15)(openapi-types@12.1.3)(react-native@0.81.1(@babel/core@7.28.4)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.2)
       '@chainsafe/libp2p-gossipsub': 14.1.1
       '@libp2p/identify': 3.0.39
       '@mastra/core': 0.0.0-ai-v5-20250813235735(openapi-types@12.1.3)(zod@3.25.76)
+      ai: 5.0.44(zod@3.25.76)
       libp2p: 2.9.0
       typescript: 5.9.2
       zod: 3.25.76
@@ -5952,13 +5974,18 @@ snapshots:
       - '@hono/valibot-validator'
       - '@hono/zod-validator'
       - '@sinclair/typebox'
+      - '@types/json-schema'
       - '@valibot/to-json-schema'
       - arktype
       - aws-crt
+      - bufferutil
       - effect
       - encoding
       - openapi-types
+      - pg-native
+      - react-native
       - supports-color
+      - utf-8-validate
       - valibot
       - zod-openapi
 
