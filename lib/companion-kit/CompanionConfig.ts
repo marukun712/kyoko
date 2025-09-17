@@ -1,6 +1,5 @@
 export interface CompanionConfigOptions {
 	userName: string;
-	modelName: string;
 	websocketUrl: string;
 	companionId: string;
 
@@ -16,7 +15,6 @@ export interface CompanionConfigOptions {
 
 export class CompanionConfig {
 	public readonly userName: string;
-	public readonly modelName: string;
 	public readonly websocketUrl: string;
 	public readonly companionId: string;
 
@@ -29,7 +27,6 @@ export class CompanionConfig {
 
 	constructor(options: CompanionConfigOptions) {
 		this.userName = options.userName;
-		this.modelName = options.modelName;
 		this.websocketUrl = options.websocketUrl;
 		this.companionId = options.companionId;
 
@@ -45,12 +42,7 @@ export class CompanionConfig {
 	}
 
 	validate(): void {
-		if (
-			!this.userName ||
-			!this.modelName ||
-			!this.websocketUrl ||
-			!this.companionId
-		) {
+		if (!this.userName || !this.websocketUrl || !this.companionId) {
 			throw new Error("Validation failed.");
 		}
 	}

@@ -13,10 +13,10 @@ import {
 	MessageEventHandler,
 	MixamoAnimationProvider,
 	VisionEventHandler,
-	VOICEVOXProvider,
 	VRMEmotionProvider,
 	WebCamVisionProvider,
 	WebSpeechProvider,
+	WebSpeechTTSProvider,
 } from "../lib/companion-kit";
 import { loadVRM } from "../utils/vrm/loadVRM";
 
@@ -83,9 +83,10 @@ export default function Home() {
 
 			handleResize();
 
+			console.log(process.env.NEXT_PUBLIC_MODEL_NAME);
+
 			const config = new CompanionConfig({
 				userName: process.env.NEXT_PUBLIC_USER_NAME || "yamada",
-				modelName: process.env.NEXT_PUBLIC_MODEL_NAME || "kyoko.vrm",
 				websocketUrl:
 					process.env.NEXT_PUBLIC_FIREHOSE_URL || "ws://localhost:8080",
 				companionId: process.env.NEXT_PUBLIC_COMPANION_ID || "companion_kyoko",
@@ -93,13 +94,7 @@ export default function Home() {
 
 			engine = new CompanionEngine(config);
 
-			engine.setTTSProvider(
-				new VOICEVOXProvider({
-					baseUrl:
-						process.env.NEXT_PUBLIC_VOICEVOX_URL || "http://127.0.0.1:50021",
-					speaker: Number(process.env.NEXT_PUBLIC_VOICEVOX_SPEAKER) || 1,
-				}),
-			);
+			engine.setTTSProvider(new WebSpeechTTSProvider({ lang: "ja-JP" }));
 			engine.setSpeechProvider(new WebSpeechProvider());
 			engine.setEmotionProvider(new VRMEmotionProvider());
 			engine.setLipSyncProvider(new LipSyncProvider());

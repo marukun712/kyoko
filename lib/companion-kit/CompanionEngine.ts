@@ -166,6 +166,7 @@ export class CompanionEngine {
 			const audioSource = await this.ttsProvider.synthesize(text);
 
 			if (
+				this.config.enableLipSync &&
 				this.lipSyncProvider &&
 				audioSource.getAudioNode &&
 				this.audioContext
@@ -344,7 +345,7 @@ export class CompanionEngine {
 			}
 
 			if (result.transcript.length >= 5) {
-				this.handleSpeechResult(result.transcript);
+				this.sendMessage(result.transcript);
 				this.speechProvider.stopListening();
 			}
 		});
@@ -368,7 +369,7 @@ export class CompanionEngine {
 		);
 	}
 
-	private async handleSpeechResult(transcript: string): Promise<void> {
+	private async sendMessage(transcript: string): Promise<void> {
 		if (!this.websocket) return;
 		this.websocket.send(
 			JSON.stringify({

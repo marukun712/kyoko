@@ -3,7 +3,6 @@ import type * as THREE from "three";
 
 export interface CompanionConfig {
 	userName: string;
-	modelName: string;
 	modelPath: string;
 	websocketUrl: string;
 	companionId: string;
