@@ -2,8 +2,9 @@
 
 import { useRef, useState } from "react";
 import * as THREE from "three";
-import { CompanionControls } from "../components/CompanionControls";
-import { CompanionViewer } from "../components/CompanionViewer";
+import { ARButton, VRButton } from "three/examples/jsm/Addons.js";
+import { CompanionControls } from "../../../components/CompanionControls";
+import { CompanionViewer } from "../../../components/CompanionViewer";
 import {
 	CompanionConfig,
 	CompanionEngine,
@@ -16,8 +17,8 @@ import {
 	WebCamVisionProvider,
 	WebSpeechProvider,
 	WebSpeechTTSProvider,
-} from "../lib/companion-kit";
-import { loadVRM } from "../utils/vrm/loadVRM";
+} from "../../../lib/companion-kit";
+import { loadVRM } from "../../../utils/vrm/loadVRM";
 
 let scene: THREE.Scene | null = null;
 let camera: THREE.PerspectiveCamera | null = null;
@@ -26,7 +27,11 @@ let clock: THREE.Clock | null = null;
 let engine: CompanionEngine | null = null;
 let visionProvider: WebCamVisionProvider | null = null;
 
-export default function Home() {
+export default function Home({
+	params,
+}: {
+	params: Promise<{ type: string }>;
+}) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [isInitialized, setIsInitialized] = useState(false);
 
@@ -34,6 +39,8 @@ export default function Home() {
 		if (!canvasRef.current || isInitialized) return;
 
 		try {
+			const { type } = await params;
+
 			const canvas = canvasRef.current;
 
 			scene = new THREE.Scene();
@@ -48,6 +55,29 @@ export default function Home() {
 
 			renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 			renderer.setClearColor(0xffffff);
+			renderer.xr.enabled = true;
+
+			if (type === "looking-glass") {
+				const { LookingGlassConfig, LookingGlassWebXRPolyfill } = await import(
+					//@ts-expect-error
+					"@lookingglass/webxr"
+				);
+				const lookingGlass = LookingGlassConfig;
+				lookingGlass.targetY = 1.25;
+				lookingGlass.targetZ = 0;
+				lookingGlass.targetDiam = 0.7;
+				lookingGlass.fovy = (14 * Math.PI) / 180;
+				new LookingGlassWebXRPolyfill();
+				document.body.appendChild(VRButton.createButton(renderer));
+			} else {
+				if (type === "meta-quest") {
+					document.body.appendChild(
+						ARButton.createButton(renderer, {
+							requiredFeatures: ["plane-detection"],
+						}),
+					);
+				}
+			}
 
 			camera.position.set(0, 1, 1);
 
