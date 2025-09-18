@@ -69,14 +69,12 @@ export default function Home({
 				lookingGlass.fovy = (14 * Math.PI) / 180;
 				new LookingGlassWebXRPolyfill();
 				document.body.appendChild(VRButton.createButton(renderer));
-			} else {
-				if (type === "meta-quest") {
-					document.body.appendChild(
-						ARButton.createButton(renderer, {
-							requiredFeatures: ["plane-detection"],
-						}),
-					);
-				}
+			} else if (type === "meta-quest") {
+				document.body.appendChild(
+					ARButton.createButton(renderer, {
+						requiredFeatures: ["plane-detection"],
+					}),
+				);
 			}
 
 			camera.position.set(0, 1, 1);
@@ -134,6 +132,10 @@ export default function Home({
 			const { gltf } = await loadVRM(modelPath);
 			const vrm = gltf.userData.vrm;
 			const mixer = new THREE.AnimationMixer(gltf.scene);
+			if (type === "meta-quest") {
+				gltf.scene.position.set(0, -1.5, 0);
+			}
+
 			scene.add(gltf.scene);
 			engine.setVRM(vrm, mixer);
 

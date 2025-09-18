@@ -11,11 +11,13 @@ export class MotionDBFetcher {
 	async fetch(prompt: string) {
 		const res = await fetch(`${this.url}search?query=${prompt}`);
 		const json = await res.json();
-		return json.url;
+		return `${this.url}motions/${json.id}.fbx`;
 	}
 }
 
-const fetcher = new MotionDBFetcher("http://host.docker.internal:3000");
+const fetcher = new MotionDBFetcher(
+	process.env.MOTIONDB_URL || "http://localhost:3000/",
+);
 
 export const motionDBGestureAction = createCompanionAction({
 	id: "motion-db-gesture",
