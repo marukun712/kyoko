@@ -1,5 +1,5 @@
 import type { CompanionEngine } from "../CompanionEngine";
-import type { WebSocketEvent } from "../types";
+import { type Action, ActionSchema } from "../types";
 import { EventHandler } from "./EventHandler";
 
 export class GestureEventHandler extends EventHandler {
@@ -7,18 +7,15 @@ export class GestureEventHandler extends EventHandler {
 		return "Gesture Event Handler";
 	}
 
-	canHandle(event: WebSocketEvent): boolean {
-		return !!(
-			event.name === "gesture" &&
-			event.params?.url &&
-			typeof event.params.url === "string"
-		);
+	canHandle(event: unknown): boolean {
+		const parsed = ActionSchema.safeParse(event);
+		return parsed.success;
 	}
 
-	async handle(event: WebSocketEvent, engine: CompanionEngine): Promise<void> {
+	async handle(event: Action, engine: CompanionEngine): Promise<void> {
 		this.validateEvent(event);
 		try {
-			await this.playGestureAnimation(event.params.url, engine);
+			await this.playGestureAnimation(event.params.params.url, engine);
 		} catch (error) {
 			console.error("Failed to handle gesture event:", error);
 		}

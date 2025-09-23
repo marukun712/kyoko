@@ -1,5 +1,5 @@
 import type { CompanionEngine } from "../CompanionEngine";
-import type { WebSocketEvent } from "../types";
+import { type Message, MessageSchema } from "../types";
 import { EventHandler } from "./EventHandler";
 
 export class MessageEventHandler extends EventHandler {
@@ -7,18 +7,12 @@ export class MessageEventHandler extends EventHandler {
 		return "Message Event Handler";
 	}
 
-	canHandle(event: WebSocketEvent): boolean {
-		return !!(
-			event.message &&
-			typeof event.message === "string" &&
-			event.metadata.emotion &&
-			typeof event.metadata.emotion === "string"
-		);
+	canHandle(event: unknown): boolean {
+		const parsed = MessageSchema.safeParse(event);
+		return parsed.success;
 	}
 
-	async handle(event: WebSocketEvent, engine: CompanionEngine): Promise<void> {
+	async handle(event: Message, _engine: CompanionEngine): Promise<void> {
 		this.validateEvent(event);
-		engine.speak(event.message);
-		engine.setEmotion(event.metadata.emotion, 1);
 	}
 }

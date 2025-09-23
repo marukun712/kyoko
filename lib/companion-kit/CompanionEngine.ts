@@ -9,8 +9,9 @@ import type { TTSProvider } from "./providers/tts";
 import type { VisionProvider } from "./providers/vision";
 import type {
 	CompanionContext,
+	Message,
+	QueryResult,
 	SpeechRecognitionResult,
-	WebSocketEvent,
 } from "./types";
 
 export class CompanionEngine {
@@ -290,7 +291,7 @@ export class CompanionEngine {
 			this.websocket = new WebSocket(this.config.websocketUrl);
 			this.websocket.onmessage = async (event) => {
 				try {
-					const data: WebSocketEvent = JSON.parse(event.data);
+					const data = JSON.parse(event.data);
 					await this.handleWebSocketEvent(data);
 				} catch (error) {
 					console.error("Failed to handle WebSocket event:", error);
@@ -355,33 +356,33 @@ export class CompanionEngine {
 		});
 	}
 
-	async returnQuery(id: string, body: string): Promise<void> {
+	async returnQuery(id: string, body: Record<string, unknown>): Promise<void> {
 		if (!this.websocket) return;
-		this.websocket.send(
-			JSON.stringify({
-				topic: "query-results",
-				body: {
-					id,
-					success: true,
-					body: body,
-				},
-			}),
-		);
+		const query: QueryResult = {
+			jsonrpc: "2.0",
+			id,
+			result: {
+				success: true,
+				body,
+			},
+		};
+
+		this.websocket.send(JSON.stringify(query));
 	}
 
 	private async sendMessage(transcript: string): Promise<void> {
 		if (!this.websocket) return;
-		this.websocket.send(
-			JSON.stringify({
-				topic: "messages",
-				body: {
-					id: crypto.randomUUID(),
-					from: `user_${this.config.userName}`,
-					to: [this.config.companionId],
-					message: transcript,
-				},
-			}),
-		);
+		const query: Message = {
+			jsonrpc: "2.0",
+			method: "message.send",
+			params: {
+				id: crypto.randomUUID(),
+				from: `user_${this.config.userName}`,
+				to: [this.config.companionId],
+				message: transcript,
+			},
+		};
+		this.websocket.send(JSON.stringify(query));
 	}
 
 	dispose(): void {
