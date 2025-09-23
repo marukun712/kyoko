@@ -7,9 +7,11 @@ export class MessageEventHandler extends EventHandler {
 		return "Message Event Handler";
 	}
 
-	canHandle(event: unknown): boolean {
+	canHandle(event: unknown, engine: CompanionEngine): boolean {
 		const parsed = MessageSchema.safeParse(event);
-		return parsed.success;
+		return (
+			parsed.success && parsed.data.params.from === engine.config.companionId
+		);
 	}
 
 	async handle(event: Message, _engine: CompanionEngine): Promise<void> {

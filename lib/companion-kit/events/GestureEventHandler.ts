@@ -7,9 +7,11 @@ export class GestureEventHandler extends EventHandler {
 		return "Gesture Event Handler";
 	}
 
-	canHandle(event: unknown): boolean {
+	canHandle(event: unknown, engine: CompanionEngine): boolean {
 		const parsed = ActionSchema.safeParse(event);
-		return parsed.success;
+		return (
+			parsed.success && parsed.data.params.from === engine.config.companionId
+		);
 	}
 
 	async handle(event: Action, engine: CompanionEngine): Promise<void> {

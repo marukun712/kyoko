@@ -311,15 +311,13 @@ export class CompanionEngine {
 		}
 	}
 
-	private async handleWebSocketEvent(event: WebSocketEvent): Promise<void> {
-		if (event.from === this.config.companionId) {
-			for (const handler of this.eventHandlers) {
-				if (handler.canHandle(event, this)) {
-					try {
-						await handler.handle(event, this);
-					} catch (error) {
-						console.error(`Handler ${handler.getName()} failed:`, error);
-					}
+	private async handleWebSocketEvent(event: unknown): Promise<void> {
+		for (const handler of this.eventHandlers) {
+			if (handler.canHandle(event, this)) {
+				try {
+					await handler.handle(event, this);
+				} catch (error) {
+					console.error(`Handler ${handler.getName()} failed:`, error);
 				}
 			}
 		}
