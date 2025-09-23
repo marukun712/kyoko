@@ -1,0 +1,3 @@
+[submodule "motiondb"]
+	path = motiondb
+	url = https://github.com/MRTalk-dev/MRTalk-Motion
