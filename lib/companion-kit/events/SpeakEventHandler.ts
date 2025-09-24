@@ -16,7 +16,8 @@ export class VisionEventHandler extends EventHandler {
 
 	async handle(event: Query, engine: CompanionEngine): Promise<void> {
 		this.validateEvent(event);
-		if ("message" in event.params.body) engine.speak(event.params.body.message);
+		if ("message" in event.params.body)
+			engine.speak(event.id, event.params.body.message);
 		if ("emotion" in event.params.body)
 			engine.setEmotion(event.params.body.emotion, 1);
 	}

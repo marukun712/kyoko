@@ -154,7 +154,7 @@ export class CompanionEngine {
 		this.speechProvider.stopListening();
 	}
 
-	async speak(text: string): Promise<void> {
+	async speak(id: string, text: string): Promise<void> {
 		if (!this.config.enableVoice) {
 			console.warn("Voice is disabled.");
 			return;
@@ -179,6 +179,9 @@ export class CompanionEngine {
 			}
 
 			await audioSource.play();
+			audioSource.onEnded = async () => {
+				await this.returnQuery(id, { success: true });
+			};
 		} catch (error) {
 			console.error("Failed to speak text:", error);
 		}
