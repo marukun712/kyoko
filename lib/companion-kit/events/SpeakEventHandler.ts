@@ -2,7 +2,7 @@ import type { CompanionEngine } from "../CompanionEngine";
 import { type Query, QuerySchema } from "../types";
 import { EventHandler } from "./EventHandler";
 
-export class VisionEventHandler extends EventHandler {
+export class SpeakEventHandler extends EventHandler {
 	getName(): string {
 		return "Vision Event Handler";
 	}
@@ -10,7 +10,9 @@ export class VisionEventHandler extends EventHandler {
 	canHandle(event: unknown, engine: CompanionEngine): boolean {
 		const parsed = QuerySchema.safeParse(event);
 		return (
-			parsed.success && parsed.data.params.from === engine.config.companionId
+			parsed.success &&
+			parsed.data.params.from === engine.config.companionId &&
+			parsed.data.params.type === "speak"
 		);
 	}
 

@@ -12,6 +12,7 @@ import {
 	LipSyncProvider,
 	MessageEventHandler,
 	MixamoAnimationProvider,
+	SpeakEventHandler,
 	VisionEventHandler,
 	VRMEmotionProvider,
 	WebCamVisionProvider,
@@ -97,8 +98,6 @@ export default function Home({
 
 			handleResize();
 
-			console.log(process.env.NEXT_PUBLIC_MODEL_NAME);
-
 			const config = new CompanionConfig({
 				userName: process.env.NEXT_PUBLIC_USER_NAME || "yamada",
 				websocketUrl:
@@ -116,6 +115,8 @@ export default function Home({
 			engine.addEventHandler(new MessageEventHandler());
 			engine.addEventHandler(new GestureEventHandler());
 			engine.addEventHandler(new VisionEventHandler());
+			engine.addEventHandler(new SpeakEventHandler());
+
 			visionProvider = new WebCamVisionProvider();
 			engine.setVisionProvider(visionProvider);
 
