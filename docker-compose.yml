@@ -13,7 +13,7 @@ services:
       - "3030:3030"
     environment:
       - PORT=3030
-      - MOTIONDB_URL=http://host.docker.internal:3000/
+      - MOTIONDB_URL=http://localhost:3000/
       - NEXT_PUBLIC_USER_NAME=maril
       - NEXT_PUBLIC_COMPANION_ID=companion_kyoko
       - NEXT_PUBLIC_FIREHOSE_URL=ws://localhost:8080/
@@ -28,7 +28,7 @@ services:
       - "3031:3031"
     environment:
       - PORT=3031
-      - MOTIONDB_URL=http://host.docker.internal:3000/
+      - MOTIONDB_URL=http://localhost:3000/
       - NEXT_PUBLIC_USER_NAME=maril
       - NEXT_PUBLIC_COMPANION_ID=companion_aya
       - NEXT_PUBLIC_FIREHOSE_URL=ws://localhost:8080/

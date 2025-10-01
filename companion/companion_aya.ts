@@ -3,6 +3,7 @@ import {
 	CompanionAgent,
 	type CompanionCard,
 	CompanionServer,
+	type Message,
 } from "@aikyo/server";
 import { companionNetworkKnowledge, speakTool } from "./tools/index";
 import { motionDBGestureAction } from "./tools/motion-db";
@@ -75,9 +76,13 @@ export const companionCard: CompanionCard = {
 	},
 };
 
+const history: Message[] = [];
 const companion = new CompanionAgent(
 	companionCard,
 	anthropic("claude-3-5-haiku-latest"),
+	history,
 );
-const server = new CompanionServer(companion, { timeoutDuration: 1000 });
+const server = new CompanionServer(companion, history, {
+	timeoutDuration: 1000,
+});
 await server.start();
