@@ -1,3 +1,4 @@
+import type { Message, QueryResult } from "@aikyo/server";
 import type { VRM } from "@pixiv/three-vrm";
 import * as THREE from "three";
 import type { CompanionConfig } from "./CompanionConfig";
@@ -7,12 +8,7 @@ import type { EmotionProvider, LipSyncProvider } from "./providers/emotion";
 import type { SpeechRecognitionProvider } from "./providers/speech";
 import type { TTSProvider } from "./providers/tts";
 import type { VisionProvider } from "./providers/vision";
-import type {
-	CompanionContext,
-	Message,
-	QueryResult,
-	SpeechRecognitionResult,
-} from "./types";
+import type { CompanionContext, SpeechRecognitionResult } from "./types";
 
 export class CompanionEngine {
 	config: CompanionConfig;

@@ -1,5 +1,5 @@
+import { type Action, ActionSchema } from "@aikyo/server";
 import type { CompanionEngine } from "../CompanionEngine";
-import { type Action, ActionSchema } from "../types";
 import { EventHandler } from "./EventHandler";
 
 export class GestureEventHandler extends EventHandler {
@@ -10,7 +10,9 @@ export class GestureEventHandler extends EventHandler {
 	canHandle(event: unknown, engine: CompanionEngine): boolean {
 		const parsed = ActionSchema.safeParse(event);
 		return (
-			parsed.success && parsed.data.params.from === engine.config.companionId
+			parsed.success &&
+			parsed.data.params.from === engine.config.companionId &&
+			parsed.data.params.name === "gesture"
 		);
 	}
 

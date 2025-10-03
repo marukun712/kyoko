@@ -1,5 +1,5 @@
+import { type Query, QuerySchema } from "@aikyo/server";
 import type { CompanionEngine } from "../CompanionEngine";
-import { type Query, QuerySchema } from "../types";
 import { EventHandler } from "./EventHandler";
 
 export class SpeakEventHandler extends EventHandler {
@@ -18,9 +18,11 @@ export class SpeakEventHandler extends EventHandler {
 
 	async handle(event: Query, engine: CompanionEngine): Promise<void> {
 		this.validateEvent(event);
-		if ("message" in event.params.body)
-			engine.speak(event.id, event.params.body.message);
-		if ("emotion" in event.params.body)
-			engine.setEmotion(event.params.body.emotion, 1);
+		if (event.params.body) {
+			if ("message" in event.params.body)
+				engine.speak(event.id, event.params.body.message);
+			if ("emotion" in event.params.body)
+				engine.setEmotion(event.params.body.emotion, 1);
+		}
 	}
 }
