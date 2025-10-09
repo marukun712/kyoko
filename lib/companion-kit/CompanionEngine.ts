@@ -1,4 +1,3 @@
-import type { Message, QueryResult } from "@aikyo/server";
 import type { VRM } from "@pixiv/three-vrm";
 import * as THREE from "three";
 import type { CompanionConfig } from "./CompanionConfig";
@@ -355,12 +354,15 @@ export class CompanionEngine {
 
 	async returnQuery(id: string, body: Record<string, unknown>): Promise<void> {
 		if (!this.websocket) return;
-		const query: QueryResult = {
-			jsonrpc: "2.0",
-			id,
-			result: {
-				success: true,
-				body,
+		const query = {
+			topic: "queries",
+			body: {
+				jsonrpc: "2.0",
+				id,
+				result: {
+					success: true,
+					body,
+				},
 			},
 		};
 
@@ -369,14 +371,17 @@ export class CompanionEngine {
 
 	private async sendMessage(transcript: string): Promise<void> {
 		if (!this.websocket) return;
-		const query: Message = {
-			jsonrpc: "2.0",
-			method: "message.send",
-			params: {
-				id: crypto.randomUUID(),
-				from: `user_${this.config.userName}`,
-				to: [this.config.companionId],
-				message: transcript,
+		const query = {
+			topic: "messages",
+			body: {
+				jsonrpc: "2.0",
+				method: "message.send",
+				params: {
+					id: crypto.randomUUID(),
+					from: `user_${this.config.userName}`,
+					to: [this.config.companionId],
+					message: transcript,
+				},
 			},
 		};
 		this.websocket.send(JSON.stringify(query));
