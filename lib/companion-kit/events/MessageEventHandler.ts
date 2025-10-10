@@ -1,5 +1,5 @@
-import { type Message, MessageSchema } from "@aikyo/server";
 import type { CompanionEngine } from "../CompanionEngine";
+import { type Message, MessageSchema } from "../types/index";
 import { EventHandler } from "./EventHandler";
 
 export class MessageEventHandler extends EventHandler {

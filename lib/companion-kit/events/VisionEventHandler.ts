@@ -1,5 +1,5 @@
-import { type Query, QuerySchema } from "@aikyo/server";
 import type { CompanionEngine } from "../CompanionEngine";
+import { type Query, QuerySchema } from "../types/index";
 import { EventHandler } from "./EventHandler";
 
 export class VisionEventHandler extends EventHandler {

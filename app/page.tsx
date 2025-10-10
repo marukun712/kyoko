@@ -13,10 +13,10 @@ import {
 	MixamoAnimationProvider,
 	SpeakEventHandler,
 	VisionEventHandler,
+	VOICEVOXProvider,
 	VRMEmotionProvider,
 	WebCamVisionProvider,
 	WebSpeechProvider,
-	WebSpeechTTSProvider,
 } from "../lib/companion-kit";
 import { loadVRM } from "../utils/vrm/loadVRM";
 
@@ -79,7 +79,14 @@ export default function Home() {
 
 			engine = new CompanionEngine(config);
 
-			engine.setTTSProvider(new WebSpeechTTSProvider({ lang: "ja-JP" }));
+			engine.setTTSProvider(
+				new VOICEVOXProvider({
+					baseUrl:
+						process.env.NEXT_PUBLIC_VOICEVOX_URL || "http://localhost:50021",
+					speaker: Number(process.env.NEXT_PUBLIC_VOICEVOX_SPEAKER) || 1,
+				}),
+			);
+
 			engine.setSpeechProvider(new WebSpeechProvider());
 			engine.setEmotionProvider(new VRMEmotionProvider());
 			engine.setLipSyncProvider(new LipSyncProvider());

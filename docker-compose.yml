@@ -13,12 +13,14 @@ services:
       - "3030:3030"
     environment:
       - PORT=3030
-      - MOTIONDB_URL=http://localhost:3000/
+      - MOTIONDB_URL=http://host.docker.internal:3000/
       - NEXT_PUBLIC_USER_NAME=maril
       - NEXT_PUBLIC_COMPANION_ID=companion_kyoko
       - NEXT_PUBLIC_FIREHOSE_URL=ws://localhost:8080/
       - NEXT_PUBLIC_MODEL_NAME=kyoko.vrm
       - NEXT_PUBLIC_IDLE_ANIMATION_URL=/idle.fbx
+      - NEXT_PUBLIC_VOICEVOX_URL=http://localhost:50021
+      - NEXT_PUBLIC_VOICEVOX_SPEAKER=4
     volumes:
       - "./db:/app/db"
   aya:
@@ -28,11 +30,27 @@ services:
       - "3031:3031"
     environment:
       - PORT=3031
-      - MOTIONDB_URL=http://localhost:3000/
+      - MOTIONDB_URL=http://host.docker.internal:3000/
       - NEXT_PUBLIC_USER_NAME=maril
       - NEXT_PUBLIC_COMPANION_ID=companion_aya
       - NEXT_PUBLIC_FIREHOSE_URL=ws://localhost:8080/
       - NEXT_PUBLIC_MODEL_NAME=aya.vrm
       - NEXT_PUBLIC_IDLE_ANIMATION_URL=/idle.fbx
+      - NEXT_PUBLIC_VOICEVOX_URL=http://localhost:50021
+      - NEXT_PUBLIC_VOICEVOX_SPEAKER=20
     volumes:
       - "./db:/app/db"
+
+  voicevox:
+    image: voicevox/voicevox_engine:nvidia-latest
+    container_name: voicevox
+    restart: unless-stopped
+    ports:
+      - "50021:50021"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

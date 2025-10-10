@@ -1,5 +1,5 @@
-import { type Action, ActionSchema } from "@aikyo/server";
 import type { CompanionEngine } from "../CompanionEngine";
+import { type Action, ActionSchema } from "../types/index";
 import { EventHandler } from "./EventHandler";
 
 export class GestureEventHandler extends EventHandler {

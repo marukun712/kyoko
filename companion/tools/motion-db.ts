@@ -12,7 +12,7 @@ export class MotionDBFetcher {
 	async fetch(prompt: string) {
 		const res = await fetch(`${this.url}search?query=${prompt}`);
 		const json = await res.json();
-		return `${this.url}motions/${json.id}.fbx`;
+		return json.url;
 	}
 }
 
