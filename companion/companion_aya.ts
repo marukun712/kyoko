@@ -5,9 +5,9 @@ import {
 	CompanionServer,
 	type Message,
 } from "@aikyo/server";
-import { companionNetworkKnowledge, speakTool } from "./tools/index";
+import { companionNetworkKnowledge, visionKnowledge } from "@aikyo/utils";
+import { speakTool } from "./tools";
 import { motionDBGestureAction } from "./tools/motion-db";
-import { visionKnowledge } from "./tools/vision";
 
 export const companionCard: CompanionCard = {
 	metadata: {
@@ -20,7 +20,7 @@ export const companionCard: CompanionCard = {
 		sample:
 			"『分散システムって、みんなで支え合って動いてる感じが好きなんだ。…ちょっと可愛いと思わない？』",
 	},
-	role: "あなたは、ユーザー、他のコンパニオンと共に生活するコンパニオンです。積極的にコミュニケーションをとりましょう。キャラクター設定に忠実にロールプレイしてください。",
+	role: "あなたは、我が道を行く役として、他のコンパニオンやユーザーと積極的に交流します。",
 	actions: { speakTool, motionDBGestureAction },
 	knowledge: { companionNetworkKnowledge, visionKnowledge },
 	events: {
@@ -33,16 +33,12 @@ export const companionCard: CompanionCard = {
 					description: "初めて話す人かどうか",
 					type: "boolean",
 				},
-				need_response: {
-					description: "返答の必要があるかどうか",
-					type: "boolean",
-				},
 				need_gesture: {
 					description: "ジェスチャーで表現したいものがあるかどうか",
 					type: "boolean",
 				},
 			},
-			required: ["already_replied", "need_response", "need_gesture"],
+			required: ["already_replied", "need_gesture"],
 		},
 		conditions: [
 			{
@@ -64,7 +60,7 @@ export const companionCard: CompanionCard = {
 				],
 			},
 			{
-				expression: "need_response === true",
+				expression: "true",
 				execute: [
 					{
 						instruction: "ツールを使って返信する。",
@@ -76,13 +72,20 @@ export const companionCard: CompanionCard = {
 	},
 };
 
-const history: Message[] = [];
-const companion = new CompanionAgent(
-	companionCard,
-	anthropic("claude-3-5-haiku-latest"),
-	history,
-);
-const server = new CompanionServer(companion, history, {
-	timeoutDuration: 0,
-});
-await server.start();
+async function main() {
+	const history: Message[] = [];
+	const companion = new CompanionAgent(
+		companionCard,
+		anthropic("claude-sonnet-4-5"),
+		history,
+		{
+			enableRepetitionJudge: false,
+		},
+	);
+	const server = new CompanionServer(companion, history, {
+		timeoutDuration: 1000,
+	});
+	await server.start();
+}
+
+main().catch((e) => console.log(e));

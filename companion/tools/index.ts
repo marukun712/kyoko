@@ -1,5 +1,5 @@
 import type { Query } from "@aikyo/server";
-import { createCompanionAction, createCompanionKnowledge } from "@aikyo/utils";
+import { createCompanionAction } from "@aikyo/utils";
 import { z } from "zod";
 
 export const speakTool = createCompanionAction({
@@ -8,9 +8,13 @@ export const speakTool = createCompanionAction({
 	inputSchema: z.object({
 		message: z.string(),
 		to: z
-			.array(z.string())
+			.array(
+				z.string().refine((val) => val.startsWith("companion_"), {
+					message: "String must start with 'companion_'",
+				}),
+			)
 			.describe(
-				"このメッセージの宛先。必ずコンパニオンのidを指定してください。特定のコンパニオンに個人的に話しかけたいとき以外は、必ず、会話に参加したことのある全員を含むようにしてください。また、積極的にuserに会話を振ってください。",
+				"このメッセージの宛先。必ずcompanion_から始まるコンパニオンidを指定してください。特定のコンパニオンに個人的に話しかけたいとき以外は、必ず、会話に参加したことのある他のコンパニオンのidを含むようにしてください。",
 			),
 		emotion: z.enum(["happy", "sad", "angry", "neutral"]),
 	}),
@@ -27,7 +31,7 @@ export const speakTool = createCompanionAction({
 				body: { message: input.message, emotion: input.emotion },
 			},
 		};
-		const res = await sendQuery(query);
+		const res = await sendQuery(query, 100000);
 		console.log(res);
 		return {
 			jsonrpc: "2.0",
@@ -41,16 +45,4 @@ export const speakTool = createCompanionAction({
 			},
 		};
 	},
-});
-
-export const companionNetworkKnowledge = createCompanionKnowledge({
-	id: "companions-network",
-	description:
-		"同じネットワークに所属しているコンパニオンのリストを取得します。",
-	inputSchema: z.object({}),
-	outputSchema: z.string(),
-	knowledge: async ({ companions }) =>
-		Array.from(companions.entries())
-			.map((metadata) => JSON.stringify(metadata, null, 2))
-			.join("\n"),
 });
